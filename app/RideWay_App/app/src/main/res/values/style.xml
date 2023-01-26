@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="LoginHeadLineStyle">
+        <item name="android:letterSpacing">-0.02</item>
+        <item name="android:textSize">20dp</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="RegisterInputStyle">
+        <item name="android:paddingLeft">10dp</item>
+    </style>
+
+    <style name="MySpinnerDatePickerStyle" parent="android:Theme.Material.Dialog">
+        <item name="android:datePickerStyle">@style/MySpinnerDatePicker</item>
+    </style>
+
+    <style name="MySpinnerDatePicker" parent="android:Widget.Material.DatePicker">
+        <item name="android:datePickerMode">spinner</item>
+    </style>
+    
+    <style name="MyToolBar" parent="@style/Widget.AppCompat.Toolbar">
+        <item name="android:background">@drawable/custom_toolbar</item>
+    </style>
+
+    <style name="ProfileModifyButton">
+        <item name="android:background">@drawable/profile_button_border</item>
+        <item name="backgroundTint">@color/background_blue</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textSize">20dp</item>
+    </style>
+
+    <style name="MyPageButton">
+        <item name="android:background">@drawable/normal_button_border</item>
+        <item name="android:backgroundTint">@color/background_blue</item>
+        <item name="android:gravity">left</item>
+        <item name="android:paddingLeft">20dp</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textSize">20dp</item>
+    </style>
+
+</resources>
