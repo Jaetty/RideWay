@@ -12,7 +12,7 @@ import java.time.LocalDateTime;
 @Table(name = "comment")
 public class Comment {
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "comment_id")
     private Long commentId;
 

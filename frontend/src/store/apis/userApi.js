@@ -1,6 +1,6 @@
 /* eslint-disable */
 import axios from 'axios';
-import { BASE_URL, CONTEXT_URL } from '../../utils/urls';
+import { BASE_URL } from '../../utils/urls';
 
 // 회원가입
 export async function signUpAPI({
@@ -19,6 +19,14 @@ export async function signUpAPI({
   // imagePath,
   open,
 }) {
+  if (weight === 0) {
+    // console.log('바꾼다');
+    weight = 62;
+  }
+  if (bikeweight === 0) {
+    // console.log('자전거 바꾼다');
+    bikeweight = 12;
+  }
   const result = await axios.post(`${BASE_URL}user/signup`, {
     name,
     age,
@@ -34,7 +42,6 @@ export async function signUpAPI({
     weight,
     cycle_weight: bikeweight,
     // image_path: imagePath,
-    image_path: 'imagePath',
     open,
   });
   return result;
@@ -62,10 +69,10 @@ export async function editUserAPI({
     weight: weight ? weight : 0,
     cycle_weight: bikeweight ? bikeweight : 0,
     // image_path: imagePath,
-    image_path: 'imagePath',
     open,
     token,
   });
+  console.log(result);
   return result;
 }
 
@@ -154,21 +161,50 @@ export async function checkNickAPI(nick) {
 
 // 회원탈퇴
 export async function userDeleteAPI(data) {
-  const promise = await axios.delete(
-    `${BASE_URL}user/deleteUser`,
-    {
-      data: {
-        password: data.password,
-        token: data.userToken,
-      },
+  const promise = await axios.delete(`${BASE_URL}user/deleteUser`, {
+    data: {
+      password: data.password,
+      token: data.userToken,
     },
-  );
-  console.log('이까지안옴');
+  });
   return promise.data;
 }
 
+// 유저 검색
+export async function userSearchAPI(data) {
+  const result = axios.get(`${BASE_URL}user/search/nickname`, {
+    params: {
+      nickname: data.nickname,
+    },
+  });
+  return result;
+}
+
+// 유저 상세페이지
+export async function userInfoAPI({ nickname }) {
+  const promise = axios.get(`${BASE_URL}user/search`, {
+    params: { nickname },
+  });
+  return promise;
+}
+
 // 프로필사진 업로드
-export async function imageAPI(formData) {
-  const result = await axios.post(`${BASE_URL}user/image`, formData);
+export async function imageUploadAPI(formData) {
+  // for (let key of formData.keys()) {
+  //   console.log(key);
+  // }
+  // for (let value of formData.values()) {
+  //   console.log(value);
+  // }
+  const result = await axios
+    .post(`${BASE_URL}user/imageUpload`, formData, {
+      headers: { 'Content-Type': 'multipart/form-data' },
+    })
+    .then(response => {
+      console.log(response.data);
+    })
+    .catch(error => {
+      console.error(error);
+    });
   return result;
 }

@@ -14,7 +14,7 @@ import java.util.List;
 @Entity
 public class Board{
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "board_id")
     private Long boardId;
 
@@ -31,7 +31,7 @@ public class Board{
 	@Column(length = 255)
 	private String title;
 
-	@Column(length = 255)
+	@Column(length = 16000)
 	private String content;
 
 	private Long visited;

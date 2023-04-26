@@ -18,8 +18,12 @@ public interface BoardRepository extends JpaRepository<Board, Long> {
     Board findByBoardId(Long BoardId);
 
 
-    Page<BoardListMapping> findByTitleContaining(String keyword, Pageable pageable);
+
+
+//    Page<BoardListMapping> findByTitleContaining(String keyword, Pageable pageable);
 
 
     Page<BoardListMapping> findAllByBoardCode(Pageable pageable, int boardCode);
+
+    Page<BoardListMapping> findByBoardCodeAndTitleContaining(int boardCode, String keyword, Pageable pageable);
 }

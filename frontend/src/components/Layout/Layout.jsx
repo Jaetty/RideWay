@@ -1,8 +1,13 @@
+/* eslint-disable */
 import React, { useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
 import Navbar from '../Navbar/Navbar';
-import { MY_PAGE_REQUEST } from '../../store/modules/myPageModule';
+import {
+  MY_PAGE_REQUEST,
+  MY_PAGE_RESET,
+} from '../../store/modules/myPageModule';
+import Chat from '../chat/Chat';
 
 const Layout = ({ children }) => {
   const dispatch = useDispatch();
@@ -18,13 +23,18 @@ const Layout = ({ children }) => {
           token: userToken,
         },
       });
+    } else if (!userToken) {
+      dispatch({
+        type: MY_PAGE_RESET,
+      });
     }
-  }, [myPageDone, logInDone]); // dispatch,
+  }, [myPageDone, logInDone, dispatch]); // dispatch,
 
   return (
     <div>
       <Navbar myPageDone={myPageDone} user={user} />
       <main>{children}</main>
+      {myPageDone && <Chat />}
     </div>
   );
 };

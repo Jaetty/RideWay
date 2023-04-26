@@ -34,6 +34,7 @@ public class Report {
 
 	private LocalDateTime time;
 
+	@Column(name="check")
 	private boolean state;
 
 

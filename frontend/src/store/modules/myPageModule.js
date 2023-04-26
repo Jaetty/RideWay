@@ -24,6 +24,7 @@ const initialState = {
 export const MY_PAGE_REQUEST = 'MY_PAGE_REQUEST';
 export const MY_PAGE_SUCCESS = 'MY_PAGE_SUCCESS';
 export const MY_PAGE_FAILURE = 'MY_PAGE_FAILURE';
+export const MY_PAGE_RESET = 'MY_PAGE_RESET';
 
 const reducer = (state = initialState, action) =>
   produce(state, draft => {
@@ -42,6 +43,12 @@ const reducer = (state = initialState, action) =>
       case MY_PAGE_FAILURE:
         draft.myPageRequest = false;
         draft.myPageError = action.error;
+        sessionStorage.clear();
+        break;
+      case MY_PAGE_RESET:
+        draft.myPageRequest = false;
+        draft.myPageDone = false;
+        draft.user = {};
         break;
       default:
         break;

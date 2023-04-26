@@ -33,6 +33,18 @@ const initialState = {
   deleteUserRequest: false,
   deleteUserDone: false,
   deleteUserError: null,
+  // 유저 검색
+  searchUserRequest: false,
+  searchUserDone: false,
+  searchUserError: null,
+  searchUsers: [],
+  // 유저 상세 정보
+  userInfoRequest: false,
+  userInfoDone: false,
+  userInfoError: null,
+  userInfo: [],
+  // 채팅 알람 여부
+  chatAlarm: false,
 };
 
 // 회원가입
@@ -67,6 +79,19 @@ export const EDIT_USER_FAILURE = 'EDIT_USER_FAILURE';
 export const DELETE_USER_REQUEST = 'DELETE_USER_REQUEST';
 export const DELETE_USER_SUCCESS = 'DELETE_USER_SUCCESS';
 export const DELETE_USER_FAILURE = 'DELETE_USER_FAILURE';
+// 유저 검색
+export const SEARCH_USER_REQUEST = 'SEARCH_USER_REQUEST';
+export const SEARCH_USER_SUCCESS = 'SEARCH_USER_SUCCESS';
+export const SEARCH_USER_FAILURE = 'SEARCH_USER_FAILURE';
+export const SEARCH_USER_RESET = 'SEARCH_USER_RESET';
+// 유저 상세 정보
+export const USER_INFO_REQUEST = 'USER_INFO_REQUEST';
+export const USER_INFO_SUCCESS = 'USER_INFO_SUCCESS';
+export const USER_INFO_FAILURE = 'USER_INFO_FAILURE';
+export const USER_INFO_RESET = 'USER_INFO_RESET';
+
+// 채팅 알람
+export const CHAT_ALARM = 'CHAT_ALARM';
 
 const reducer = (state = initialState, action) =>
   produce(state, draft => {
@@ -90,6 +115,9 @@ const reducer = (state = initialState, action) =>
         draft.logInRequest = true;
         draft.logInDone = false;
         draft.logInError = null;
+        if (draft.signUpDone) {
+          draft.signUpDone = false;
+        }
         break;
       case LOG_IN_SUCCESS:
         draft.logInRequest = false;
@@ -159,23 +187,68 @@ const reducer = (state = initialState, action) =>
         draft.editUserRequest = true;
         draft.editUserDone = false;
         draft.editUserError = null;
+        break;
       case EDIT_USER_SUCCESS:
         draft.editUserRequest = false;
         draft.editUserDone = true;
+        break;
       case EDIT_USER_FAILURE:
         draft.editUserRequest = false;
         draft.editUserError = action.error;
+        break;
       // 회원탈퇴
       case DELETE_USER_REQUEST:
         draft.deleteUserRequest = true;
         draft.deleteUserDone = false;
         draft.deleteUserError = null;
+        break;
       case DELETE_USER_SUCCESS:
         draft.deleteUserRequest = false;
         draft.deleteUserDone = true;
+        break;
       case DELETE_USER_FAILURE:
         draft.deleteUserRequest = false;
         draft.deleteUserError = action.error;
+        break;
+      // 유저 검색
+      case SEARCH_USER_REQUEST:
+        draft.searchUserRequest = true;
+        draft.searchUserDone = false;
+        draft.searchUserError = null;
+        break;
+      case SEARCH_USER_SUCCESS:
+        draft.searchUserRequest = false;
+        draft.searchUserDone = true;
+        draft.searchUsers = action.data;
+        break;
+      case SEARCH_USER_FAILURE:
+        draft.searchUserRequest = false;
+        draft.searchUserError = action.error;
+        break;
+      case SEARCH_USER_RESET:
+        draft.searchUsers = [];
+        break;
+      // 유저 상세 정보
+      case USER_INFO_REQUEST:
+        draft.userInfoRequest = true;
+        draft.userInfoDone = false;
+        draft.userInfoError = null;
+        break;
+      case USER_INFO_SUCCESS:
+        draft.userInfoRequest = false;
+        draft.userInfoDone = true;
+        draft.userInfo = action.data;
+        break;
+      case USER_INFO_FAILURE:
+        draft.userInfoRequest = false;
+        draft.userInfoError = action.error;
+        break;
+      case USER_INFO_RESET:
+        draft.userInfo = [];
+        break;
+      case CHAT_ALARM:
+        draft.chatAlarm = action.data;
+        break;
       default:
         break;
     }

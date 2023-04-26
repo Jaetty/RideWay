@@ -12,4 +12,5 @@ public interface GunRepository extends JpaRepository<Gun, Long> {
 
     @Query("SELECT m FROM Gun m where m.si_code = :code")
     List<Gun> findByName(@Param("code") Integer code);
+
 }

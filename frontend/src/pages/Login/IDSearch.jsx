@@ -1,14 +1,18 @@
+/* eslint-disable */
 import React, { useState } from 'react';
 import { useDispatch } from 'react-redux';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import Input from '../../components/commons/input';
 import { FIND_ID_REQUEST } from '../../store/modules/userModule';
-// import { useDispatch } from 'react-redux';
+import { Container, InputBox, Title } from './IDSearch.style';
+import Button from '../../components/commons/button';
 
 const IDSearch = () => {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
 
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const inputName = e => {
     setName(e.target.value);
@@ -21,47 +25,58 @@ const IDSearch = () => {
     e.preventDefault();
     dispatch({
       type: FIND_ID_REQUEST,
-      data: { name, email },
+      data: { name, email, navigate },
     });
   };
   return (
-    <div>
-      <h1>LOGO</h1>
-      <div>
-        <h3>아이디 찾기</h3>
-        <h5>회원가입 시 이름과 등록한 이메일로 아이디를 찾습니다.</h5>
-      </div>
-      <form onSubmit={findId}>
+    <>
+      <Container>
         <div>
-          <label htmlFor="nameInput">성명</label>
-          <br />
-          <input
-            required
-            value={name}
-            onChange={inputName}
-            id="nameInput"
-            type="text"
-          />
+          <Title>아이디 찾기</Title>
+          <h5>회원가입 시 이름과 등록한 이메일로 아이디를 찾습니다.</h5>
         </div>
-        <div>
-          <label htmlFor="inputEmail">이메일</label>
-          <br />
-          <input
-            required
-            value={email}
-            onChange={inputEmail}
-            id="inputEmail"
-            type="text"
-          />
-        </div>
-        <div>
-          <button>확인</button>
-          <Link to="/user/login">
-            <button>취소</button>
-          </Link>
-        </div>
-      </form>
-    </div>
+        <form onSubmit={findId}>
+          <InputBox mt="3rem">
+            <div>성명</div>
+            <Input
+              required
+              width="30vw"
+              minWidth="200px"
+              height="2.5rem"
+              onChange={inputName}
+              id="nameInput"
+              value={name}
+              type="text"
+            />
+          </InputBox>
+          <InputBox>
+            <div>이메일</div>
+            <Input
+              required
+              width="30vw"
+              minWidth="200px"
+              height="2.5rem"
+              onChange={inputEmail}
+              id="inputEmail"
+              value={email}
+              type="text"
+            />
+          </InputBox>
+          <div style={{ display: 'flex', justifyContent: 'center' }}>
+            <Button name="찾기" mt="1rem" width="8rem" height="2.5rem" />
+            <Link to="/user/login">
+              <Button
+                name="취소"
+                mt="1rem"
+                width="8rem"
+                height="2.5rem"
+                ml="1rem"
+              />
+            </Link>
+          </div>
+        </form>
+      </Container>
+    </>
   );
 };
 

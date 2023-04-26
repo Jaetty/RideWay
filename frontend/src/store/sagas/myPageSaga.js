@@ -1,3 +1,4 @@
+/* eslint-disable */
 import { all, call, fork, put, takeLatest } from '@redux-saga/core/effects';
 import { myPageAPI } from '../apis/myPageApi';
 // import Swal from 'sweetalert2';

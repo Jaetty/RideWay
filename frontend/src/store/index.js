@@ -1,3 +1,5 @@
+import { persistReducer, persistStore } from 'redux-persist';
+import storage from 'redux-persist/lib/storage';
 import { configureStore } from '@reduxjs/toolkit';
 import createSagaMiddleware from 'redux-saga';
 import rootReducer from './modules/index';
@@ -5,15 +7,21 @@ import rootSaga from './sagas/index';
 
 const storeConfigure = () => {
   const sagaMiddleware = createSagaMiddleware({});
-  // const middlewares = [sagaMiddleware];
+
+  const persistConfig = {
+    key: 'root',
+    storage,
+    whitelist: ['myPage', 'logInTime'],
+  };
+  const persistedReducer = persistReducer(persistConfig, rootReducer);
+
   const store = configureStore({
-    reducer: rootReducer,
+    reducer: persistedReducer,
     middleware: [sagaMiddleware],
   });
+  const persistor = persistStore(store);
   sagaMiddleware.run(rootSaga);
-  return { store };
+  return { store, persistor };
 };
-
-// export const reducers = reducer.actions;
 
 export default storeConfigure;

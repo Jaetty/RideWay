@@ -10,7 +10,7 @@ import javax.persistence.*;
 @Entity
 public class User {
     @Id 
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "user_id")
     private Long userId;
 
@@ -55,6 +55,9 @@ public class User {
 	@Column(length = 255, name = "image_path")
 	private String imagePath;
 
+//	@Column(length = 255, name = "image_uuid_path")
+//	private String imageUuidPath;
+
 	@Column
 	private boolean open;
 
@@ -77,6 +80,7 @@ public class User {
 		this.password = password;
 		this.permission = permission;
 		this.imagePath = imagePath;
+//		this.imageUuidPath = imageUuidPath;
 		this.open = open;
     }
 

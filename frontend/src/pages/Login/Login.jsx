@@ -1,7 +1,12 @@
+/* eslint-disable */
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import { LOG_IN_REQUEST } from '../../store/modules/userModule';
+import { TIME_REQUEST } from '../../store/modules/logInTime';
+import { Container, InputBox, Title } from './Login.style';
+import Input from '../../components/commons/input';
+import Button from '../../components/commons/button';
 
 const Login = () => {
   const dispatch = useDispatch();
@@ -17,12 +22,9 @@ const Login = () => {
   const navigate = useNavigate();
 
   const LoginButton = e => {
+    const now = new Date();
+    now.setHours(now.getHours() + 2);
     e.preventDefault();
-    // if (id === '') {
-    //   alert('아이디를 입력하세요');
-    // } else if (password === '') {
-    //   alert('패스워드를 입력하세요');
-    // } else {
     dispatch({
       type: LOG_IN_REQUEST,
       data: {
@@ -31,45 +33,90 @@ const Login = () => {
         navigate,
       },
     });
-
+    dispatch({
+      type: TIME_REQUEST,
+      data: {
+        now,
+      },
+    });
     setId('');
     setPassword('');
-
-    // return navigate('/');
   };
 
   return (
-    <div>
-      <h1>Login</h1>
-      <div>
+    <>
+      <Container>
+        <Title>로 그 인</Title>
         <form onSubmit={LoginButton}>
-          <div>
-            <input
+          <InputBox mt="3rem">
+            <div>아이디</div>
+            <Input
               required
+              // mt="1rem"
+              width="30vw"
+              minWidth="200px"
               onChange={inputId}
               value={id}
               type="text"
               placeholder="아이디를 입력해주세요."
             />
-          </div>
-          <div>
-            <input
+          </InputBox>
+          <InputBox>
+            <div>비밀번호</div>
+            <Input
               required
+              // mt="1rem"
+              width="30vw"
+              minWidth="200px"
               onChange={inputPassword}
               value={password}
               type="password"
               placeholder="비밀번호를 입력해주세요."
             />
-          </div>
-          <input type="submit" value="로그인" />
+          </InputBox>
+          <Button
+            name="로그인"
+            mt="1.5rem"
+            width="31vw"
+            minWidth="220px"
+            height="3rem"
+            br="16px"
+            border="none"
+            // bc="#e9e9e9"
+            hoverColor="#def1ff"
+            onClick={LoginButton}
+          />
         </form>
-        <div>
-          <Link to="/user/findId">아이디 찾기</Link>
-          <Link to="/user/findPwd">비밀번호 찾기</Link>
-          <Link to="/user/signup">회원가입</Link>
+        <div
+          style={{
+            display: 'flex',
+            justifyContent: 'space-around',
+            width: '20vw',
+            minWidth: '200px',
+            marginTop: '1rem',
+          }}
+        >
+          <Link
+            style={{ fontSize: '13px', textDecoration: 'none', color: 'grey' }}
+            to="/user/findId"
+          >
+            아이디 찾기
+          </Link>
+          <Link
+            style={{ fontSize: '13px', textDecoration: 'none', color: 'grey' }}
+            to="/user/findPwd"
+          >
+            비밀번호 찾기
+          </Link>
+          <Link
+            style={{ fontSize: '13px', textDecoration: 'none', color: 'grey' }}
+            to="/user/signup"
+          >
+            회원가입
+          </Link>
         </div>
-      </div>
-    </div>
+      </Container>
+    </>
   );
 };
 

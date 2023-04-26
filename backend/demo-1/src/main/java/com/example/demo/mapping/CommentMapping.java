@@ -12,9 +12,13 @@ public interface CommentMapping {
     default String getUserNickname() {
         return getUserIdNickname();
     }
+    default Long getUserId() { return getUserIdUserId(); }
     default Long getBoardId() { return getBoardIdBoardId(); }
     @JsonIgnore
     String getUserIdNickname();
+
+    @JsonIgnore
+    Long getUserIdUserId();
 
     @JsonIgnore
     Long getBoardIdBoardId();

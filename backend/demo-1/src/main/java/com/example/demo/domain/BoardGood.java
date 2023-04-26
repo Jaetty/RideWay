@@ -15,7 +15,7 @@ public class BoardGood {
     @EmbeddedId
     private BoardGoodPK boardGoodPK;
 
-    @Column
+    @Column(name = "selected")
     private boolean selected;
 
     @Builder

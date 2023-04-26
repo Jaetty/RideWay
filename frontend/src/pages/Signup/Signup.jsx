@@ -1,3 +1,4 @@
+/* eslint-disable */
 import React, { useState, useCallback } from 'react';
 import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router';
@@ -9,16 +10,32 @@ import {
   checkCertiAPI,
 } from '../../store/apis/userApi';
 import { SIGN_UP_REQUEST } from '../../store/modules/userModule';
-import { SignupContentRow } from './Signup.style';
+import {
+  Container,
+  Desc,
+  InputBlock,
+  Logo,
+  MainContainer,
+  SelectBox,
+  Title,
+  Wrapper,
+} from './Signup.style';
+import { Timer } from '../../components/Timer';
+import InputContainer from '../../components/commons/inputContainer';
+import Button from '../../components/commons/button';
+import Input from '../../components/commons/input';
+import ValidContainer from '../../components/commons/validContainer';
+import logo from '../../assets/images/rideway-low-resolution-logo-black-on-white-background.png';
+import NowContainer from '../../components/commons/nowLocation';
 
 const SignUp = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
   // 주소지 목록
-  const options1 = ['전체', ...Object.keys(address)];
-  const [options2, setOptions2] = useState([]);
-  const [options3, setOptions3] = useState([]);
+  const options1 = ['시', ...Object.keys(address)];
+  const [options2, setOptions2] = useState(['구']);
+  const [options3, setOptions3] = useState(['동']);
 
   // 중복 체크 및 이메일 인증 체크
   const [idCheck, setIdCheck] = useState(false);
@@ -29,7 +46,7 @@ const SignUp = () => {
   const [idMessage, setIdMessage] = useState('');
   const [nickMessage, setNickMessage] = useState('');
   const [ageMessage, setAgeMessage] = useState(
-    '숫자만 입력해주세요 ex) 19900101',
+    '"-" 없이 숫자만 입력해주세요 ex) 1990-01-01',
   );
   const [emailMessage, setEmailMessage] = useState('');
   const [pwdMessage, setPwdMessage] = useState('');
@@ -38,7 +55,7 @@ const SignUp = () => {
   // 유효성 검사
   const [isId, setIsId] = useState(false);
   const [isNick, setIsNick] = useState(false);
-  const [isAge, setIsAge] = useState(true);
+  const [isAge, setIsAge] = useState(false);
   const [isEmail, setIsEmail] = useState(false);
   const [isPwd, setIsPwd] = useState(false);
   const [isPwdChk, setIsPwdChk] = useState(false);
@@ -59,7 +76,7 @@ const SignUp = () => {
   const [gender, setGender] = useState('');
   const [weight, setWeight] = useState(0);
   const [bikeweight, setBikeweight] = useState(0);
-  const [imagePath, setImagePath] = useState();
+  // const [imagePath, setImagePath] = useState();
   const [open, setOpen] = useState(false);
 
   // 생년월일 유효성 검사
@@ -87,11 +104,11 @@ const SignUp = () => {
         /* eslint-disable-next-line */
         .replace(/(\-{1,2})$/g, '');
       setAge(birth);
-      setAgeMessage('숫자만 입력해주세요 ex) 19900101');
+      setAgeMessage('"-" 없이 숫자만 입력해주세요 ex) 1990-01-01');
       setIsAge(false);
     } else if (birth.length === 0) {
       setAge(birth);
-      setIsAge(true);
+      setIsAge(false);
     }
     if (birth.length === 10) {
       const year = parseInt(age.slice(0, 4), 10);
@@ -117,25 +134,25 @@ const SignUp = () => {
     }
   };
   const inputSi = e => {
-    if (e.target.value === '전체') {
-      setOptions2([]);
+    if (e.target.value === '시') {
+      setOptions2(['구']);
       setGun('');
-      setOptions3([]);
+      setOptions3(['동']);
       setDong('');
     } else {
-      setOptions2(['전체', ...Object.keys(address[e.target.value])]);
+      setOptions2(['구', ...Object.keys(address[e.target.value])]);
       setGun('');
-      setOptions3([]);
+      setOptions3(['동']);
       setDong('');
     }
     setSi(e.target.value);
   };
   const inputGun = e => {
-    if (e.target.value === '전체') {
-      setOptions3([]);
+    if (e.target.value === '구') {
+      setOptions3(['동']);
       setDong('');
     } else {
-      setOptions3(['전체', ...address[si][e.target.value]]);
+      setOptions3(['동', ...address[si][e.target.value]]);
       setDong('');
     }
     setGun(e.target.value);
@@ -148,35 +165,36 @@ const SignUp = () => {
   };
   const inputName = e => {
     setName(e.target.value);
-    setIdCheck(false);
   };
   const inputNick = e => {
     setNick(e.target.value);
     setNickCheck(false);
-    setNickMessage('');
+    setNickMessage('닉네임 중복확인을 해주세요');
   };
   const inputGender = e => {
     setGender(e.target.value);
   };
   const inputWeight = e => {
-    const num = parseInt(e.target.value, 10);
-    setWeight(num);
+    const Regex = /^[0-9]{0,2}$/;
+    if (Regex.test(e.target.value)) {
+      setWeight(e.target.value);
+    }
   };
   const inputBikeweight = e => {
-    setBikeweight(e.target.value);
+    const Regex = /^[0-9]{0,2}$/;
+    if (Regex.test(e.target.value)) {
+      setBikeweight(e.target.value);
+    }
   };
   const inputOpen = e => {
-    if (e.target.value === 'on') {
-      setOpen(true);
-    } else {
-      setOpen(false);
-    }
+    setOpen(e.target.checked);
   };
 
   // ID 유효성 검사
   const onChangeID = useCallback(e => {
     const idCurrent = e.target.value;
     setId(idCurrent);
+    setIdCheck(false);
     const idRegex = /^[a-z0-9]{5,20}$/;
     if (!idRegex.test(idCurrent)) {
       setIdMessage(
@@ -200,10 +218,10 @@ const SignUp = () => {
     setEmailCerti(false);
 
     if (!emailRegex.test(emailCurrent)) {
-      setEmailMessage('이메일 형식이 틀렸습니다. 다시 확인해주세요');
+      setEmailMessage('이메일 형식이 틀렸습니다. 다시 확인해주세요!');
       setIsEmail(false);
     } else {
-      setEmailMessage('올바른 이메일 형식이에요 :)');
+      setEmailMessage('');
       setIsEmail(true);
     }
   }, []);
@@ -217,11 +235,11 @@ const SignUp = () => {
 
     if (!passwordRegex.test(passwordCurrent)) {
       setPwdMessage(
-        '숫자+영문자+특수문자 조합으로 8자리 이상 16자 이하로 입력해주세요!',
+        '숫자+영문자+특수문자로 8자리 이상 16자 이하로 입력해주세요!',
       );
       setIsPwd(false);
     } else {
-      setPwdMessage('안전한 비밀번호에요 : )');
+      setPwdMessage('');
       setIsPwd(true);
     }
   }, []);
@@ -233,37 +251,28 @@ const SignUp = () => {
       setPwdchk(passwordCheckCurrent);
 
       if (pwd === passwordCheckCurrent) {
-        setPwdChkMessage('비밀번호를 똑같이 입력했어요 : )');
+        setPwdChkMessage('');
         setIsPwdChk(true);
       } else {
-        setPwdChkMessage('비밀번호가 틀려요. 다시 확인해주세요 ㅜ ㅜ');
+        setPwdChkMessage('비밀번호가 틀려요. 다시 확인해주세요 :(');
         setIsPwdChk(false);
       }
     },
     [pwd],
   );
 
-  // 이미지 미리보기
-  const encodeFileToBase64 = fileBlob => {
-    const reader = new FileReader();
-    reader.readAsDataURL(fileBlob);
-    return new Promise(resolve => {
-      reader.onload = () => {
-        setImagePath(reader.result);
-        resolve();
-      };
-    });
-  };
-
   // Email 인증 보내기  ==>  String으로 return이 와서 지금은 다 true임
-  const sendMail = e => {
+  const sendMail = async e => {
     e.preventDefault();
     try {
-      const result = sendMailAPI(email);
+      setEmailSend(false);
+      const result = await sendMailAPI(email);
       setEmailSend(true);
       return result;
     } catch {
       setEmailSend(false);
+      setEmailMessage('이미 존재하는 이메일입니다');
+      setIsEmail(false);
       return false;
     }
   };
@@ -287,8 +296,7 @@ const SignUp = () => {
   const CheckId = async e => {
     e.preventDefault();
     const result = await checkIdAPI(id);
-    console.log(result);
-    console.log('로직 바꿔야됨!!');
+    // console.log(result);
     if (!result) {
       setIdMessage('사용가능한 ID입니다');
       setIsId(true);
@@ -304,7 +312,7 @@ const SignUp = () => {
   const CheckNick = async e => {
     e.preventDefault();
     const result = await checkNickAPI(nick);
-    console.log(result);
+    // console.log(result);
     if (!result) {
       setNickMessage('사용가능한 닉네임입니다');
       setNickCheck(true);
@@ -314,6 +322,11 @@ const SignUp = () => {
       setNickCheck(false);
       setIsNick(false);
     }
+  };
+
+  // 뒤로가기 버튼
+  const onCancle = () => {
+    navigate(-1);
   };
 
   // 회원가입 버튼
@@ -376,7 +389,6 @@ const SignUp = () => {
           gender,
           weight,
           bikeweight,
-          imagePath,
           open,
           navigate,
         },
@@ -385,246 +397,281 @@ const SignUp = () => {
   };
 
   return (
-    <div>
-      <h1>회원가입</h1>
-      <form onSubmit={signUpBtn} encType="multipart/form-data">
-        <div>
-          <label htmlFor="name">이름</label>
-          <br />
-          <input
-            type="text"
-            id="name"
-            className="input check-input"
-            placeholder="Name"
+    <>
+      <Container duration="0.5s">
+        <MainContainer>
+          <Title>회 원 가 입</Title>
+          {/* <Logo src={logo} /> */}
+          <InputContainer
+            desc="이름"
+            star
             onChange={inputName}
+            name="name"
+            width="20rem"
           />
-        </div>
-        <SignupContentRow>
-          <label htmlFor="age">생년월일</label>
-          <br />
-          <input
-            type="text"
-            id="age"
-            className="input check-input"
-            placeholder="Age"
-            value={age}
+          <InputContainer
+            desc="생년월일"
+            star
             onChange={inputAge}
+            value={age}
+            name="age"
+            isValid={isAge}
+            errMsg={age.length > 0 ? ageMessage : ''}
+            width="20rem"
           />
-          <br />
-          <span className={`message ${isAge ? 'success' : 'error'}`}>
-            {ageMessage}
-          </span>
-          {/* {email.length > 0 && (
-            <span className={`message ${isAge ? 'success' : 'error'}`}>
-              {ageMessage}
-            </span>
-          )} */}
-        </SignupContentRow>
-        <div>
-          <label htmlFor="address">주소</label>
-          <br />
-          <select onChange={inputSi} value={si} placeholder="시를 선택해주세요">
-            {options1.map(item => (
-              <option value={item} key={item}>
-                {item}
-              </option>
-            ))}
-          </select>
-          <select
-            onChange={inputGun}
-            value={gun}
-            placeholder="구를 선택해주세요"
-          >
-            {options2?.map(item => (
-              <option value={item} key={item}>
-                {item}
-              </option>
-            ))}
-          </select>
-          <select
-            onChange={inputDong}
-            value={dong}
-            placeholder="동을 선택해주세요"
-          >
-            {options3?.map(item => (
-              <option value={item} key={item}>
-                {item}
-              </option>
-            ))}
-          </select>
-        </div>
-        <SignupContentRow>
-          <label htmlFor="email">Email</label>
-          <br />
-          <input
-            type="text"
-            id="email"
-            className="input check-input"
-            placeholder="Email"
+          <InputBlock>
+            <Wrapper>
+              <div className="desc">
+                <div className="star">*</div>
+                주소
+              </div>
+              <SelectBox
+                onChange={inputSi}
+                value={si}
+                placeholder="시"
+                width="7rem"
+              >
+                {options1.map(item => (
+                  <option value={item} key={item}>
+                    {item}
+                  </option>
+                ))}
+              </SelectBox>
+              <SelectBox
+                onChange={inputGun}
+                value={gun}
+                placeholder="구"
+                width="7rem"
+              >
+                {options2?.map(item => (
+                  <option value={item} key={item}>
+                    {item}
+                  </option>
+                ))}
+              </SelectBox>
+              <SelectBox
+                onChange={inputDong}
+                value={dong}
+                placeholder="동"
+                width="7rem"
+              >
+                {options3?.map(item => (
+                  <option value={item} key={item}>
+                    {item}
+                  </option>
+                ))}
+              </SelectBox>
+            </Wrapper>
+          </InputBlock>
+          <InputContainer
+            desc="이메일"
+            star
             onChange={onChangeEmail}
+            value={email}
+            name="email"
+            isValid={isEmail}
+            errMsg={email.length > 0 ? emailMessage : ''}
+            width="20rem"
           />
-          <button onClick={sendMail}>인증번호 전송</button>
-          <br />
-          {email.length > 0 && (
-            <span className={`message ${isEmail ? 'success' : 'error'}`}>
-              {emailMessage}
-            </span>
+          {!emailCheck && (
+            <Wrapper>
+              <div className="desc">
+                <div className="star"></div>
+              </div>
+              <div className="btnInput">
+                <Input
+                  width="9.5rem"
+                  onChange={inputEmailCerti}
+                  // value={emailCerti}
+                  name="mailcerti"
+                  placeholder="인증번호 입력"
+                />
+                {emailSend ? (
+                  <div className="btnInput">
+                    <Timer />
+                    <Button
+                      name="확인"
+                      width="6.5rem"
+                      height="2rem"
+                      ml="1rem"
+                      weight=""
+                      onClick={checkCerti}
+                    />
+                  </div>
+                ) : (
+                  <Button
+                    name="인증번호 전송"
+                    width="9.5rem"
+                    height="2rem"
+                    ml="1rem"
+                    weight=""
+                    onClick={sendMail}
+                  />
+                )}
+              </div>
+            </Wrapper>
           )}
-        </SignupContentRow>
-        {emailSend && (
-          <div hidden={emailCheck}>
-            <div>
-              <input
-                type="text"
-                id="mailcerti"
-                className="input check=input"
-                placeholder="인증번호 입력"
-                onChange={inputEmailCerti}
-              />
+          <Wrapper>
+            <div className="desc">
+              <div className="star">*</div>
+              아이디
             </div>
-            <button onClick={checkCerti}>확인</button>
-          </div>
-        )}
-        <div>
-          <label htmlFor="profileImg">프로필 사진</label>
-          <br />
-          <input
-            type="file"
-            id="profileImg"
-            className="input check-input"
-            placeholder="Profile Image"
-            onChange={e => {
-              encodeFileToBase64(e.target.files[0]);
-            }}
-          />
-        </div>
-        <div className="preview">
-          {imagePath && <img src={imagePath} alt="preview-img" />}
-        </div>
-        <SignupContentRow>
-          <label htmlFor="id">아이디</label>
-          <br />
-          <input
-            type="text"
-            id="id"
-            className="input check-input"
-            placeholder="Id"
-            onChange={onChangeID}
-          />
-          <button onClick={CheckId}>중복검사</button>
-          <br />
-          {id.length > 0 && (
-            <span className={`message ${isId ? 'success' : 'error'}`}>
-              {idMessage}
-            </span>
+            <div className="btnInput">
+              <Input
+                width={!idCheck ? '14rem' : '20rem'}
+                onChange={onChangeID}
+                name="id"
+                value={id}
+                // placeholder="아이디"
+              />
+              {!idCheck && (
+                <div className="btnInput">
+                  <Button
+                    name="중복검사"
+                    width="5rem"
+                    height="2rem"
+                    ml="1rem"
+                    weight=""
+                    onClick={CheckId}
+                  />
+                </div>
+              )}
+            </div>
+          </Wrapper>
+          {id.length > 0 && !idCheck && (
+            <Wrapper mt="0">
+              <div className="desc">
+                <div className="star"></div>
+              </div>
+              <ValidContainer
+                isValid={idCheck}
+                errMsg={id.length > 0 && idMessage}
+                width="30rem"
+              />
+            </Wrapper>
           )}
-        </SignupContentRow>
-        <SignupContentRow>
-          <label htmlFor="pwd">비밀번호</label>
-          <br />
-          <input
-            type="password"
-            id="pwd"
-            className="input check-input"
-            placeholder="Password"
+          <InputContainer
+            desc="비밀번호"
+            star
             onChange={onChangePassword}
-          />
-          <br />
-          {pwd.length > 0 && (
-            <span className={`message ${isPwd ? 'success' : 'error'}`}>
-              {pwdMessage}
-            </span>
-          )}
-        </SignupContentRow>
-        <SignupContentRow>
-          <label htmlFor="pwdCheck">비밀번호 확인</label>
-          <br />
-          <input
+            value={pwd}
+            name="password"
+            isValid={isPwd}
+            errMsg={pwd.length > 0 ? pwdMessage : ''}
+            width="20rem"
             type="password"
-            id="pwdCheck"
-            className="input check-input"
-            placeholder="Password Check"
+          />
+          <InputContainer
+            desc="비밀번호 확인"
+            star
             onChange={onChangePasswordCheck}
+            value={pwdchk}
+            name="passwordCheck"
+            isValid={isPwdChk}
+            errMsg={pwdchk.length > 0 ? pwdChkMessage : ''}
+            width="20rem"
+            type="password"
           />
-          <br />
-          {pwdchk.length > 0 && (
-            <span className={`message ${isPwdChk ? 'success' : 'error'}`}>
-              {pwdChkMessage}
-            </span>
+          <Wrapper>
+            <div className="desc">
+              <div className="star">*</div>
+              닉네임
+            </div>
+            <div className="btnInput">
+              <Input
+                width={!nickCheck ? '14rem' : '20rem'}
+                onChange={inputNick}
+                name="nickname"
+                value={nick}
+              />
+              {!nickCheck && (
+                <div className="btnInput">
+                  <Button
+                    name="중복검사"
+                    width="5rem"
+                    height="2rem"
+                    ml="1rem"
+                    weight="semi-bold"
+                    onClick={CheckNick}
+                  />
+                </div>
+              )}
+            </div>
+          </Wrapper>
+          {nick.length > 0 && !nickCheck && (
+            <Wrapper mt="0">
+              <div className="desc">
+                <div className="star"></div>
+              </div>
+              <ValidContainer
+                isValid={nickCheck}
+                errMsg={nick.length > 0 && nickMessage}
+              />
+            </Wrapper>
           )}
-        </SignupContentRow>
-        <SignupContentRow>
-          <label htmlFor="nickname">닉네임</label>
-          <br />
-          <input
-            type="text"
-            id="nickname"
-            className="input check-input"
-            placeholder="Nickname"
-            onChange={inputNick}
-          />
-          <button onClick={CheckNick}>중복검사</button>
-          <br />
-          {nick.length > 0 && (
-            <span className={`message ${isNick ? 'success' : 'error'}`}>
-              {nickMessage}
-            </span>
-          )}
-        </SignupContentRow>
-        <div>
-          <label htmlFor="gender">성별</label>
-          <br />
-          <select
-            onChange={inputGender}
-            value={gender}
-            placeholder="성별을 선택해주세요"
-          >
-            <option value="">성별</option>
-            <option value="male">남자</option>
-            <option value="female">여자</option>
-          </select>
-        </div>
-        <SignupContentRow>
-          <label htmlFor="weight">몸무게</label>
-          <span className="message success"> (선택 사항입니다)</span>
-          <br />
-          <input
-            type="text"
-            id="weight"
-            className="input check-input"
-            placeholder="Weight"
+          <InputBlock>
+            <Wrapper>
+              <div className="desc">
+                <div className="star">*</div>
+                성별
+              </div>
+              <SelectBox
+                onChange={inputGender}
+                value={gender}
+                placeholder="성별을 선택해주세요"
+                width="21.3rem"
+              >
+                <option value="">성별</option>
+                <option value="male">남자</option>
+                <option value="female">여자</option>
+              </SelectBox>
+            </Wrapper>
+          </InputBlock>
+          <InputContainer
+            desc="몸무게"
             onChange={inputWeight}
+            value={weight === '0' || weight === 0 ? '' : weight}
+            name="weight"
+            width="20rem"
+            type="number"
           />
-        </SignupContentRow>
-        <SignupContentRow>
-          <label htmlFor="bike-weight">자전거 무게</label>
-          <span className="message success"> (선택 사항입니다)</span>
-          <br />
-          <input
-            type="text"
-            id="bike-weight"
-            className="input check-input"
-            placeholder="Bike Weight"
+          <InputContainer
+            desc="자전거 무게"
             onChange={inputBikeweight}
+            value={bikeweight === '0' || bikeweight === 0 ? '' : bikeweight}
+            name="weight"
+            width="20rem"
+            type="number"
           />
-        </SignupContentRow>
-        <div>
-          <input
-            type="checkbox"
-            id="open"
-            className="input check-input"
-            placeholder="Open"
-            onChange={inputOpen}
-          />
-          <label htmlFor="open">정보를 공개하시겠습니까?</label>
-        </div>
-        <div>
-          <button className="signup-btn" type="submit">
-            가입
-          </button>
-        </div>
-      </form>
-    </div>
+          <InputBlock>
+            <Wrapper>
+              <div className="desc">정보 공개 여부</div>
+              <Input type="checkbox" onChange={inputOpen} width="1.5rem" />
+            </Wrapper>
+          </InputBlock>
+          <InputBlock>
+            <Button
+              name="회원가입"
+              width="8rem"
+              mt="1rem"
+              mr="0.5rem"
+              height="2.5rem"
+              onClick={signUpBtn}
+            />
+            <Button
+              name="뒤로가기"
+              width="8rem"
+              mt="1rem"
+              ml="0.5rem"
+              bc="#C4C4C4"
+              height="2.5rem"
+              hoverColor="#a2a2a2"
+              onClick={onCancle}
+            />
+          </InputBlock>
+        </MainContainer>
+      </Container>
+    </>
   );
 };
 

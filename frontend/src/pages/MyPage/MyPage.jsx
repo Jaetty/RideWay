@@ -1,28 +1,38 @@
-import React from 'react';
-import { useSelector } from 'react-redux';
+/* eslint-disable */
+import React, { useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { useNavigate } from 'react-router';
+import NowContainer from '../../components/commons/nowLocation';
 import { UserNavbar } from '../../components/User_Navbar';
+import {
+  USER_INFO_REQUEST,
+  USER_INFO_RESET,
+} from '../../store/modules/userModule';
+import { Container } from './MyPage.style';
 
 const MyPage = () => {
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
   const user = useSelector(state => state.myPage.user);
-  const address = `${user.si} ${user.gun} ${user.dong}`;
+  useEffect(() => {
+    dispatch({
+      type: USER_INFO_REQUEST,
+      data: {
+        nickname: user.nickname,
+        navigate,
+      },
+    });
+    return () =>
+      dispatch({
+        type: USER_INFO_RESET,
+      });
+  }, [user]);
   return (
     <div>
-      <div>
-        <h1>마이페이지</h1>
-      </div>
-      <div>
+      <NowContainer desc="마 이 페 이 지" />
+      <Container>
         <UserNavbar user={user} />
-      </div>
-      <div>
-        <img src={user.image_path} alt="프로필 사진" />
-      </div>
-      <div>
-        <h3>{user.nickname} 님</h3>
-        <p>나이 {user.age}</p>
-        <p>성별 {user.gender}</p>
-        <p>주소 {address}</p>
-      </div>
-      <hr />
+      </Container>
     </div>
   );
 };

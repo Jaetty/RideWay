@@ -2,10 +2,7 @@ package com.example.demo.domain;
 
 import lombok.*;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
+import javax.persistence.*;
 
 @NoArgsConstructor(access = AccessLevel.PROTECTED) 
 @Getter 
@@ -14,10 +11,9 @@ import javax.persistence.Id;
 public class CertInfo {
 
     @Id
-    @Column(length = 50)
     private String email;
 
-    @Column(length = 50)
+    @Column(length = 55)
     private String code;
 
     @Builder

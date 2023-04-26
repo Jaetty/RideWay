@@ -2,33 +2,48 @@ package com.example.demo.controller;
 
 import com.example.demo.domain.CertInfo;
 
+import com.example.demo.domain.Recode;
 import com.example.demo.repository.CertRepository;
+import com.example.demo.repository.RecodeRepository;
 import com.example.demo.repository.UserRepository;
 import com.example.demo.service.PasswordMail;
 import com.example.demo.service.RegisterMail;
 import com.example.demo.service.SecurityService;
+import lombok.extern.log4j.Log4j2;
+import org.apache.commons.codec.digest.DigestUtils;
+import org.mindrot.jbcrypt.BCrypt;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.util.FileCopyUtils;
+import org.springframework.util.ObjectUtils;
 import org.springframework.web.bind.annotation.*;
 
 import com.example.demo.domain.User;
 import com.example.demo.mapping.UserMapping;
 import com.example.demo.repository.UserRepository;
 import com.example.demo.service.RegisterMail;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 
+import javax.servlet.http.HttpServletRequest;
+import java.io.*;
+import java.nio.file.Files;
 import java.util.*;
 
 @RestController
-@RequestMapping(value = "/user")
+@Log4j2
+@RequestMapping(value ="/api/user")
 @CrossOrigin(
+        "*"
         // localhost:5500 과 127.0.0.1 구분
-        origins = "http://localhost:3000", // allowCredentials = "true" 일 경우, origins="*" 는 X
-        allowCredentials = "true",
-        allowedHeaders = "*",
-        methods = {RequestMethod.GET,RequestMethod.POST,RequestMethod.DELETE,RequestMethod.PUT,RequestMethod.HEAD,RequestMethod.OPTIONS}
+
+//        allowCredentials = "true",
+//        allowedHeaders = "*",
+//        methods = {RequestMethod.GET,RequestMethod.POST,RequestMethod.DELETE,RequestMethod.PUT,RequestMethod.HEAD,RequestMethod.OPTIONS}
+
 )
 public class UserController {
 
@@ -44,10 +59,23 @@ public class UserController {
     @Autowired
     CertRepository certRepository; // 이메일 인증 확인용
 
+    @Autowired
+    SecurityService securityService; // jwt 토큰 사용
 
     @Autowired
-    private SecurityService securityService; // jwt 토큰 사용
+    RecodeRepository recodeRepository;
 
+//        // 암호화 해야하는 대상 : password
+//        // 애매? gender, age, si, gun, dong, weight, cycle_weight, id, permission, image_path, open, email
+//        // 개인정보 확인, 유저 정보 검색 등에서 사용되는 정보는 암호화 X ( SHA 암호화 시 복호화가 안됨 )
+//        System.out.println(DigestUtils.sha512Hex("암호화테스트")); // sha 512 16진수로 반환
+//        System.out.println(DigestUtils.sha256Hex("암호화테스트")); // sha 256 16진수로 반환
+
+//        // BCrypt 암호화
+//        String pw = "pass111";
+//        String enpw = BCrypt.hashpw(pw, BCrypt.gensalt() );
+//        System.out.println(enpw);
+//        System.out.println(BCrypt.checkpw(pw, enpw));
 
     // id 중복 검사
     @GetMapping("/signup/id")
@@ -63,20 +91,26 @@ public class UserController {
         return userRepository.existsByNickname(nickname);
     }
 
+
+    // 이메일 중복 검사
     @GetMapping("/signup/email")
     public boolean checkEmailDuplicate(String email) {//@RequestBody HashMap<String, String> param){
         //String nickname = param.get("nickname");
-        return userRepository.existsByNickname(email);
+        return userRepository.existsByEmail(email);
     }
 
     // 이메일 인증번호 전송(회원가입용)
 
     @GetMapping("/registerMail")
     public Boolean sendMail(String email) {
+        if (checkEmailDuplicate(email)){
+            throw new ResponseStatusException(
+                    HttpStatus.NOT_FOUND, "이미 등록 되어 있는 이메일 입니다.");
+        }
         try {
             String certificate = ""; // 이메일 인증코드 -> 여러 사람이 동시에 인증 -> db에 저장해야함?
             certificate = registerMail.sendSimpleMessage(email);
-            System.out.println("사용자에게 발송한 메일 인증코드 ==> " + certificate);
+//            System.out.println("사용자에게 발송한 메일 인증코드 ==> " + certificate);
             // 이후, 사용자가 인증 코드를 입력하고 동일한 지 확인하기 위해 인증코드를 DB에 저장
             CertInfo crt = CertInfo.builder().email(email).code(certificate).build();
             certRepository.save(crt);
@@ -111,7 +145,7 @@ public class UserController {
         String email = param.get("email");
         String nickname = param.get("nickname");
         String permission = param.get("permission");
-        String image_path = param.get("image_path");
+        //String image_path = param.get("image_path");
         String open = param.get("open");
         String si = param.get("si");
         String gun = param.get("gun");
@@ -218,6 +252,8 @@ public class UserController {
                     HttpStatus.BAD_REQUEST, "비밀번호 조건 확인");
         }
 
+        // 비밀번호 암호화 후 DB에 저장
+        password = DigestUtils.sha256Hex(password);
 
         final User user = User.builder()
 
@@ -229,17 +265,32 @@ public class UserController {
                 .gender(gender)
                 .open(open_bool)
                 .permission(permission_int)
-                .imagePath(image_path)
+                .imagePath("images/profile/default.png")
+//                .imageUuidPath("images/profile/default.png")
                 .nickname(nickname)
                 .si(si)
                 .gun(gun)
                 .dong(dong)
                 .weight(weight_int)
                 .cycle_weight(cycle_weight_int)
-
-
                 .build();
-        return userRepository.save(user);
+        Long uid = userRepository.save(user).getUserId();
+        User newUser = userRepository.findByUserId(uid);
+
+        Recode recode = Recode.builder()
+                .userId(uid)
+                .totalSpeed(Long.valueOf(0))
+                .totalDist(Long.valueOf(0))
+                .totalCal(Long.valueOf(0))
+                .totalTime(Long.valueOf(0))
+                .weekSpeed(Long.valueOf(0))
+                .weekDist(Long.valueOf(0))
+                .weekCal(Long.valueOf(0))
+                .weekTime(Long.valueOf(0))
+                .build();
+
+        recodeRepository.save(recode);
+        return newUser;
 
 
     }
@@ -259,9 +310,12 @@ public class UserController {
         String password = param.get("password");
         HashMap<String,Object> map = new HashMap<String,Object>();
 
+        // 암호화 한 비밀번호로 로그인
+        password = DigestUtils.sha256Hex(password);
+
         try {
             User user = userRepository.findByIdAndPassword(id, password);
-            map.put("token", securityService.createToken(user.getId() , 60 * 1000 * 60));
+            map.put("token", securityService.createToken(user.getId() , 120 * 1000 * 60));
 //            map.put("name", user.getName());
             map.put("user_id", user.getUserId());
             map.put("image_path", user.getImagePath());
@@ -291,7 +345,7 @@ public class UserController {
     public ResponseEntity<HashMap<String, Object>> searchUser(String nickname) {
 
         try {
-            System.out.println(nickname);
+//            System.out.println(nickname);
             User searched_user = userRepository.findByNickname(nickname);
             HashMap<String,Object> map = new HashMap<String,Object>();
             map.put("user_id", String.valueOf(searched_user.getUserId()));
@@ -302,6 +356,7 @@ public class UserController {
             map.put("si", searched_user.getSi());
             map.put("gun", searched_user.getGun());
             map.put("dong", searched_user.getDong());
+            map.put("nickname", searched_user.getNickname());
             if (searched_user.isOpen()){
                 map.put("open", "true");
             } else {
@@ -320,15 +375,16 @@ public class UserController {
     public ResponseEntity<List<HashMap<String, Object>>> findUsersByNickname(String nickname){
         ArrayList<HashMap<String,Object>> list = new ArrayList<HashMap<String,Object>>();
         try {
-            List<User> users = userRepository.findByNicknameContaining(nickname);
+            List<User> users = userRepository.findByNicknameContaining(nickname);   // 리스트를 돌면서 필요한 데이터를 넣은 후 반환
             for (int i = 0; i < users.size(); i++) {
                 HashMap<String, Object> map = new HashMap<String, Object>();
                 map.put("user_id", String.valueOf(users.get(i).getUserId()));
                 map.put("id", users.get(i).getId());
                 map.put("nickname", String.valueOf(users.get(i).getNickname()));
+                map.put("image_path", users.get(i).getImagePath());
                 list.add(map);
             }
-            System.out.println(users);
+//            System.out.println(users);
             return new ResponseEntity<>(list, HttpStatus.OK);
         } catch (Exception e){
             throw new ResponseStatusException(
@@ -399,11 +455,18 @@ public class UserController {
         try {
             User user = userRepository.findByNameAndEmailAndId(name, email, id);
             // 이름, 이메일, 아이디가 일치하는 데이터가 존재한다면 이메일로 임시 비밀번호 전송( 셋 모두 동일한 데이터가 없다면 -> catch 문으로)
+//            System.out.println(user.getId());
+//            System.out.println(user.getEmail());
+//            System.out.println(user.getName());
+
 
             String code = passwordMail.sendSimpleMessage(email);
-            System.out.println("사용자에게 발송한 임시 비밀번호 ==> " + code);
+//            System.out.println("사용자에게 발송한 임시 비밀번호 ==> " + code);
 
             // 이름, 이메일, 아이디가 일치하는 데이터의 비밀번호를 임시 비밀번호(code)로 교체
+            // 비밀번호(code) 암호화 후 DB에 저장
+            code = DigestUtils.sha256Hex(code);
+
             user.setPassword(code);
             userRepository.save(user);
             map.put("result", "임시 비밀번호가 전송되었습니다.");
@@ -431,7 +494,8 @@ public class UserController {
         try {
 
             User user = userRepository.findById(id);
-
+            map.put("user_id", user.getUserId());
+            map.put("id", user.getId());
             map.put("name", user.getName());
             map.put("image_path", user.getImagePath());
             map.put("nickname", user.getNickname());
@@ -462,7 +526,6 @@ public class UserController {
 
         String email = param.get("email");
         String nickname = param.get("nickname");
-        String image_path = param.get("image_path");
         String open = param.get("open");
         String si = param.get("si");
         String gun = param.get("gun");
@@ -498,7 +561,6 @@ public class UserController {
 
         user.setEmail(email);
         user.setNickname(nickname);
-        user.setImagePath(image_path);
         user.setOpen(open_bool);
         user.setSi(si);
         user.setGun(gun);
@@ -524,6 +586,26 @@ public class UserController {
         //return "회원정보 변경 완료";
     }
 
+    // 이메일 변경
+    @PutMapping(value = "/editEmail")
+    public ResponseEntity<HashMap<String, Object>> changeEmail(@RequestBody HashMap<String, String> param) { // token : ~~토큰내용~~ 형식으로 보내면됨
+        HashMap<String,Object> map = new HashMap<String,Object>();
+        String token = param.get("token");
+        String new_email = param.get("new_email");
+        String id = securityService.getSubject(token);
+        User user = userRepository.findById(id);
+
+        if (checkEmailDuplicate(new_email)) {
+            throw new ResponseStatusException(
+                    HttpStatus.BAD_REQUEST, "중복된 이메일입니다.");
+        }
+        user.setEmail(new_email);
+
+        userRepository.save(user);
+        map.put("result", "설정이 변경되었습니다.");
+
+        return new ResponseEntity<>(map, HttpStatus.OK);
+    }
 
 
 
@@ -596,6 +678,10 @@ public class UserController {
         // user_id의 정보를 찾아서 현재 비밀번호가 nowPassword와 동일하다면 newPassword로 변경
         //User user = userRepository.findById(user_id).get();
 
+        // 비밀번호 암호화 후 DB에 저장
+        nowPassword = DigestUtils.sha256Hex(nowPassword);
+        newPassword = DigestUtils.sha256Hex(newPassword);
+
         if ( user.getPassword().equals(nowPassword)) {
             if (user.getPassword().equals(newPassword)) {
                 throw new ResponseStatusException(
@@ -623,6 +709,9 @@ public class UserController {
 
         String token = param.get("token");
         String password = param.get("password");
+
+        password = DigestUtils.sha256Hex(password);
+
         String id = securityService.getSubject(token);
         try {
             User user = userRepository.findById(id);
@@ -643,5 +732,117 @@ public class UserController {
             //return "에러 발생";
         }
     }
+
+    @PostMapping("/imageUpload")    // 프로필 사진 업로드 함수, 토큰이 필요함
+    public String saveProfileImage(String token, MultipartFile imageFile) throws Exception {
+        String imagePath = null;
+        String absolutePath = new File("").getAbsolutePath() + "/";
+        String id = securityService.getSubject(token);
+        String path = "images/profile";
+        File file = new File(path);
+
+        User user = userRepository.findById(id);            // 토큰으로 얻은 id로 유저를 찾아냄
+
+        if (!file.exists()) {
+            file.mkdirs();
+        }
+        if (imageFile == null || imageFile.equals("")){
+            user.setImagePath("images/profile/default.png");
+//            user.setImageUuidPath("images/profile/default.png");
+            userRepository.save(user);
+        }
+        else {
+            if (!imageFile.isEmpty()) {
+                String contentType = imageFile.getContentType();
+                String originalFileExtension;
+                if (ObjectUtils.isEmpty(contentType)) {
+                    throw new Exception("이미지 파일은 jpg, png 만 가능합니다.");
+                } else {
+                    if (contentType.contains("image/jpeg")) {
+                        originalFileExtension = ".jpg";
+                    } else if (contentType.contains("image/png")) {
+                        originalFileExtension = ".png";
+                    } else {
+                        throw new Exception("이미지 파일은 jpg, png 만 가능합니다.");
+                    }
+                }
+
+//                UUID uuid = UUID.randomUUID(); // 랜덤 파일명
+
+                imagePath = path + "/" + user.getUserId() + originalFileExtension;
+                file = new File(absolutePath + imagePath);
+                imageFile.transferTo(file);
+//                user.setImagePath(path + "/" + imageFile.getName() + originalFileExtension);
+                user.setImagePath(imagePath);
+//                user.setImageUuidPath(imagePath);                   // 이미지 경로를 유저 정보에 저장
+                userRepository.save(user);
+            } else {
+                user.setImagePath("images/profile/default.png");
+//                user.setImageUuidPath("images/profile/default.png");
+                userRepository.save(user);
+                //            throw new Exception("이미지 파일이 비어있습니다.");
+            }
+        }
+
+        return imagePath;
+    }
+
+
+    // 이미지 불러오기
+    @GetMapping("/imageDownloadBy/**")
+    @ResponseBody
+    public ResponseEntity<byte[]> getUserProfileFileBySource(HttpServletRequest request){
+        String filePath = request.getRequestURI().split(request.getContextPath() + "/imageDownloadBy/")[1];
+
+        File file=new File(filePath);
+        ResponseEntity<byte[]> result=null;
+        try {
+            HttpHeaders headers=new HttpHeaders();
+            headers.add("Content-Type", Files.probeContentType(file.toPath()));
+            result=new ResponseEntity<>(FileCopyUtils.copyToByteArray(file),headers,HttpStatus.OK );
+        }catch (IOException e) {
+            e.printStackTrace();
+        }
+        return result;
+    }
+
+
+    @GetMapping("/imageDownload")   // 유저 아이디를 이용하여 유저 경로에 있는 이미지를 가져옴
+    @ResponseBody
+    public ResponseEntity<byte[]> getUserProfileFile(@RequestParam String id){
+        User user = userRepository.findById(id);
+        String filePath = user.getImagePath();
+
+        File file=new File(filePath);
+        ResponseEntity<byte[]> result=null;
+        try {
+            HttpHeaders headers=new HttpHeaders();
+            headers.add("Content-Type", Files.probeContentType(file.toPath()));
+            result=new ResponseEntity<>(FileCopyUtils.copyToByteArray(file),headers,HttpStatus.OK );
+        }catch (IOException e) {
+            e.printStackTrace();
+        }
+        return result;
+    }
+
+    @GetMapping("/imageDownloadPK")   // 유저 아이디를 이용하여 유저 경로에 있는 이미지를 가져옴
+    @ResponseBody
+    public ResponseEntity<byte[]> getUserProfileFilePK(@RequestParam Long id){
+        User user = userRepository.findByUserId(id);
+        String filePath = user.getImagePath();
+
+        File file=new File(filePath);
+        ResponseEntity<byte[]> result=null;
+        try {
+            HttpHeaders headers=new HttpHeaders();
+            headers.add("Content-Type", Files.probeContentType(file.toPath()));
+            result=new ResponseEntity<>(FileCopyUtils.copyToByteArray(file),headers,HttpStatus.OK );
+        }catch (IOException e) {
+            e.printStackTrace();
+        }
+        return result;
+    }
+
+
 
 }

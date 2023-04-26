@@ -10,6 +10,7 @@ import com.example.demo.repository.BoardCodeRepository;
 import com.example.demo.repository.BoardRepository;
 import com.example.demo.repository.CommentRepository;
 import com.example.demo.repository.UserRepository;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -25,13 +26,17 @@ import java.util.List;
 import java.util.Map;
 
 @RestController
-@RequestMapping(value = "/comment")
+@Log4j2
+@RequestMapping(value = "/api/board/comment")
 @CrossOrigin(
+        "*"
         // localhost:5500 과 127.0.0.1 구분
-        origins = "http://localhost:8080", // allowCredentials = "true" 일 경우, origins="*" 는 X
-        allowCredentials = "true",
-        allowedHeaders = "*",
-        methods = {RequestMethod.GET,RequestMethod.POST,RequestMethod.DELETE,RequestMethod.PUT,RequestMethod.HEAD,RequestMethod.OPTIONS}
+
+//
+//        allowCredentials = "true",
+//        allowedHeaders = "*",
+//        methods = {RequestMethod.GET,RequestMethod.POST,RequestMethod.DELETE,RequestMethod.PUT,RequestMethod.HEAD,RequestMethod.OPTIONS}
+
 )
 public class CommentController {
 
@@ -47,8 +52,8 @@ public class CommentController {
     // 댓글 작성
     @PostMapping("/")
     public ResponseEntity InsertComment(@RequestBody HashMap<String, Object> param) {
-
-        System.out.println(param);
+        // 최신순?? -> findAllBy...                1(Sort.by(Sort.Direction.DESC, "regTime"));
+//        System.out.println(param);
         Long userId = Long.valueOf(String.valueOf(param.get("user_id")));
         Long boardId = Long.valueOf(String.valueOf(param.get("board_id")));
         String content = (String) param.get("content");
@@ -60,7 +65,7 @@ public class CommentController {
         DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
         String nowDateTime = now.format(dateTimeFormatter);
         LocalDateTime nowTime = LocalDateTime.parse(nowDateTime, dateTimeFormatter);
-        System.out.println(nowTime);
+//        System.out.println(nowTime);
 
         Comment comment = Comment.builder()
                 .userId(user)
@@ -102,8 +107,8 @@ public class CommentController {
     }
 
     // 댓글 삭제
-    @DeleteMapping("/")
-    public ResponseEntity DeleteComment(Long commentId) {
+    @DeleteMapping("/{commentId}")
+    public ResponseEntity DeleteComment(@PathVariable Long commentId) {
         Comment comment = commentRepository.findByCommentId(commentId);
         try {
             commentRepository.delete(comment);

@@ -14,7 +14,8 @@ import java.util.Date;
 
 @Service
 public class SecurityServiceImpl implements SecurityService {
-    private static final String SECRET_KEY = "BabayetuyetuuliyeMbinguniyetuyetuaminaBabayetuyetuuliyeJinalakolitukuzweBabayetuyetuuliye";
+    // 시크릿 키 위치
+    private static final String SECRET_KEY = "";
 
 
     @Override

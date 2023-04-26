@@ -16,4 +16,6 @@ public interface CommentRepository extends JpaRepository<Comment, Long> {
 
     @Transactional
     void deleteByBoardId(Board boardId);
+
+    List<CommentMapping> findAllByBoardIdOrderByTimeDesc(Board boardId);
 }

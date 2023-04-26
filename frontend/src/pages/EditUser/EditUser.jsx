@@ -1,15 +1,33 @@
+/* eslint-disable */
 import React, { useState, useCallback, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router';
 import { Link } from 'react-router-dom';
 import { address } from '../../components/Address';
+import { Timer } from '../../components/Timer';
 import {
   checkNickAPI,
   sendMailAPI,
   checkCertiAPI,
+  imageUploadAPI,
 } from '../../store/apis/userApi';
 import { EDIT_USER_REQUEST } from '../../store/modules/userModule';
-import { EditUserContentRow } from './EditUser.style';
+import { BASE_URL } from '../../utils/urls';
+import {
+  Container,
+  Image,
+  InputBlock,
+  // Logo,
+  MainContainer,
+  SelectBox,
+  Wrapper,
+} from './EditUser.style';
+// import logo from '../../assets/images/rideway-low-resolution-logo-black-on-white-background.png';
+import Button from '../../components/commons/button';
+import InputContainer from '../../components/commons/inputContainer';
+import Input from '../../components/commons/input';
+import ValidContainer from '../../components/commons/validContainer';
+import NowContainer from '../../components/commons/nowLocation';
 
 const editUser = () => {
   const dispatch = useDispatch();
@@ -25,32 +43,98 @@ const editUser = () => {
   const [email, setEmail] = useState(user.email);
   const [emailSend, setEmailSend] = useState(true);
   const [emailCerti, setEmailCerti] = useState(true);
+  const [timer, setTimer] = useState(false);
   const [nick, setNick] = useState(user.nickname);
   const [weight, setWeight] = useState(user.weight ? user.weight : '');
   const [bikeweight, setBikeweight] = useState(
     user.cycle_weight ? user.cycle_weight : '',
   );
-  const [imagePath, setImagePath] = useState(user.imagePath);
+  // const [imagePath, setImagePath] = useState(user.imagePath);
   const [open, setOpen] = useState(user.open);
 
+  // 프로필 사진 변수
+  const url = `${BASE_URL}user/imageDownloadBy/${user.image_path}`;
+  const [update, setUpdate] = useState(false);
+  const [image, setImage] = useState({
+    image_file: '',
+    preview_URL: url,
+  });
+
+  let inputRef;
+
+  // 프로필 사진 저장
+  const saveImage = e => {
+    e.preventDefault();
+    const fileReader = new FileReader();
+
+    if (e.target.files[0]) {
+      fileReader.readAsDataURL(e.target.files[0]);
+    }
+    fileReader.onload = () => {
+      setImage({
+        image_file: e.target.files[0],
+        preview_URL: fileReader.result,
+      });
+    };
+    setUpdate(true);
+  };
+
+  // 프로필 사진 삭제
+  const deleteImage = () => {
+    setImage({
+      image_file: '',
+      preview_URL: `${BASE_URL}user/imageDownloadBy/images/profile/default.png`,
+    });
+    setUpdate(true);
+    // console.log('프로필 사진 삭제 버튼 눌리면 기본 이미지로 바꿔야됨!!');
+  };
+
+  // 프로필 사진 등록 요청
+  const sendImageToServer = async () => {
+    if (update) {
+      if (image.image_file) {
+        const formData = new FormData();
+        formData.append('imageFile', image.image_file);
+        formData.append('token', token);
+        await imageUploadAPI(formData);
+        // console.log('이미지 등록 완료');
+        // setImage({
+        //   image_file: '',
+        //   preview_URL: 'img/default_image.png',
+        // });
+      } else {
+        const formData = new FormData();
+        formData.append('token', token);
+        await imageUploadAPI(formData);
+        // console.log('기본 이미지로 등록 완료');
+      }
+    }
+  };
+
+  // 이미지 파일 초기화
+  const resetValue = e => (e.target.value = null);
+  const resetRef = refParam => (inputRef = refParam);
+
   // 주소지 목록
-  const options1 = ['전체', ...Object.keys(address)];
+  const options1 = ['시를 선택해주세요', ...Object.keys(address)];
   const [options2, setOptions2] = useState([]);
   const [options3, setOptions3] = useState([]);
 
   // 주소 최신화
   useEffect(() => {
-    if (si === '전체') {
+    if (si === '시를 선택해주세요') {
       setOptions2([]);
       setOptions3([]);
     } else {
-      setOptions2(['전체', ...Object.keys(address[si])]);
+      setOptions2(['구를 선택해주세요', ...Object.keys(address[si])]);
       setOptions3([]);
     }
-    if (gun === '전체') {
-      setOptions3([]);
-    } else {
-      setOptions3(['전체', ...address[si][gun]]);
+    if (si && gun) {
+      if (gun === '구를 선택해주세요') {
+        setOptions3([]);
+      } else {
+        setOptions3(['동을 선택해주세요', ...address[si][gun]]);
+      }
     }
   }, []);
 
@@ -68,13 +152,16 @@ const editUser = () => {
 
   // Handler Function
   const inputSi = e => {
-    if (e.target.value === '전체') {
+    if (e.target.value === '시를 선택해주세요') {
       setOptions2([]);
       setGun('');
       setOptions3([]);
       setDong('');
     } else {
-      setOptions2(['전체', ...Object.keys(address[e.target.value])]);
+      setOptions2([
+        '구를 선택해주세요',
+        ...Object.keys(address[e.target.value]),
+      ]);
       setGun('');
       setOptions3([]);
       setDong('');
@@ -82,11 +169,11 @@ const editUser = () => {
     setSi(e.target.value);
   };
   const inputGun = e => {
-    if (e.target.value === '전체') {
+    if (e.target.value === '구를 선택해주세요') {
       setOptions3([]);
       setDong('');
     } else {
-      setOptions3(['전체', ...address[si][e.target.value]]);
+      setOptions3(['동을 선택해주세요', ...address[si][e.target.value]]);
       setDong('');
     }
     setGun(e.target.value);
@@ -103,17 +190,19 @@ const editUser = () => {
     setNickMessage('');
   };
   const inputWeight = e => {
-    setWeight(e.target.value);
+    const Regex = /^[0-9]{0,2}$/;
+    if (Regex.test(e.target.value)) {
+      setWeight(e.target.value);
+    }
   };
   const inputBikeweight = e => {
-    setBikeweight(e.target.value);
+    const Regex = /^[0-9]{0,2}$/;
+    if (Regex.test(e.target.value)) {
+      setBikeweight(e.target.value);
+    }
   };
   const inputOpen = e => {
-    if (e.target.value === 'on') {
-      setOpen(true);
-    } else {
-      setOpen(false);
-    }
+    setOpen(e.target.checked);
   };
 
   // 이메일 유효성 검사
@@ -130,32 +219,26 @@ const editUser = () => {
       setEmailMessage('이메일 형식이 틀렸습니다. 다시 확인해주세요');
       setIsEmail(false);
     } else {
-      setEmailMessage('올바른 이메일 형식이에요 :)');
+      setEmailMessage('');
       setIsEmail(true);
     }
   }, []);
 
-  // 이미지 미리보기
-  const encodeFileToBase64 = fileBlob => {
-    const reader = new FileReader();
-    reader.readAsDataURL(fileBlob);
-    return new Promise(resolve => {
-      reader.onload = () => {
-        setImagePath(reader.result);
-        resolve();
-      };
-    });
-  };
-
   // Email 인증 보내기  ==>  String으로 return이 와서 지금은 다 true임
-  const sendMail = e => {
+  const sendMail = async e => {
     e.preventDefault();
     try {
-      const result = sendMailAPI(email);
+      setEmailSend(false);
+      setTimer(false);
+      const result = await sendMailAPI(email);
+      setTimer(true);
       setEmailSend(true);
       return result;
     } catch {
       setEmailSend(false);
+      setTimer(false);
+      setEmailMessage('이미 존재하는 이메일입니다');
+      setIsEmail(false);
       return false;
     }
   };
@@ -179,7 +262,7 @@ const editUser = () => {
   const CheckNick = async e => {
     e.preventDefault();
     const result = await checkNickAPI(nick);
-    console.log(result);
+    // console.log(result);
     if (!result) {
       setNickMessage('사용가능한 닉네임입니다');
       setNickCheck(true);
@@ -189,6 +272,12 @@ const editUser = () => {
       setNickCheck(false);
       setIsNick(false);
     }
+  };
+
+  // 취소 버튼
+  const back = e => {
+    e.preventDefault();
+    navigate(-1);
   };
 
   // 수정 버튼
@@ -205,18 +294,17 @@ const editUser = () => {
     } else if (!isEmail) {
       alert('올바른 이메일을 입력해주세요');
     } else {
-      console.log({
-        si,
-        gun,
-        dong,
-        email,
-        nick,
-        weight,
-        bikeweight,
-        imagePath,
-        open,
-        token,
-      });
+      // console.log({
+      //   si,
+      //   gun,
+      //   dong,
+      //   email,
+      //   nick,
+      //   weight,
+      //   bikeweight,
+      //   open,
+      //   token,
+      // });
       dispatch({
         type: EDIT_USER_REQUEST,
         data: {
@@ -227,7 +315,6 @@ const editUser = () => {
           nick,
           weight,
           bikeweight,
-          imagePath,
           open,
           token,
           navigate,
@@ -237,169 +324,236 @@ const editUser = () => {
   };
 
   return (
-    <div>
-      {user && (
-        <div>
-          <h1>회원정보수정</h1>
-          <Link to="/user/editPwd">비밀번호 변경</Link>
-          <Link to="/user/delete">회원탈퇴</Link>
-          <form onSubmit={editUserBtn} encType="multipart/form-data">
-            <div>
-              <label htmlFor="address">주소</label>
-              <br />
-              <select
-                onChange={inputSi}
-                value={si}
-                placeholder="시를 선택해주세요"
-              >
-                {options1.map(item => (
-                  <option value={item} key={item}>
-                    {item}
-                  </option>
-                ))}
-              </select>
-              <select
-                onChange={inputGun}
-                value={gun}
-                placeholder="구를 선택해주세요"
-              >
-                {options2?.map(item => (
-                  <option value={item} key={item}>
-                    {item}
-                  </option>
-                ))}
-              </select>
-              <select
-                onChange={inputDong}
-                value={dong}
-                placeholder="동을 선택해주세요"
-              >
-                {options3?.map(item => (
-                  <option value={item} key={item}>
-                    {item}
-                  </option>
-                ))}
-              </select>
-            </div>
-            <EditUserContentRow>
-              <label htmlFor="email">Email</label>
-              <br />
-              <input
-                type="text"
-                id="email"
-                className="input check-input"
-                placeholder="Email"
-                value={email}
-                onChange={onChangeEmail}
-              />
-              <button onClick={sendMail} hidden={emailCheck}>
-                인증번호 전송
-              </button>
-              <br />
-              {email?.length > 0 && (
-                <span className={`message ${isEmail ? 'success' : 'error'}`}>
-                  {emailMessage}
-                </span>
-              )}
-            </EditUserContentRow>
-            {emailSend && (
-              <div hidden={emailCheck}>
-                <div>
+    <>
+      <NowContainer desc="회 원 정 보 수 정" />
+      <Container duration="">
+        {user && (
+          <MainContainer>
+            {/* <Link to="/user/editPwd">비밀번호 변경</Link>
+            <Link to="/user/delete">회원탈퇴</Link> */}
+            {/* <MenuWrapper> */}
+            <InputBlock>
+              <Wrapper>
+                <div className="desc">프로필 사진</div>
+                <div className="btnInput">
                   <input
-                    type="text"
-                    id="mailcerti"
-                    className="input check=input"
-                    placeholder="인증번호 입력"
-                    onChange={inputEmailCerti}
+                    type="file"
+                    accept="image/*"
+                    onChange={saveImage}
+                    // 클릭할 때마다 file input의 value를 초기화 하지 않으면 버그가 발생할 수 있다
+                    // 사진 등록을 두개 띄우고 첫번째에 사진을 올리고 지우고 두번째에 같은 사진을 올리면 그 값이 남아있다
+                    onClick={resetValue}
+                    ref={resetRef}
+                    style={{ display: 'none' }}
                   />
+                  <Image src={image?.preview_URL} alt="프로필 이미지" />
+                  <div>
+                    <Button
+                      onClick={() => inputRef.click()}
+                      name="수정"
+                      width="4rem"
+                      fontSize="0.9rem"
+                      mr="0.25rem"
+                    />
+                    <Button
+                      onClick={deleteImage}
+                      name="삭제"
+                      width="4rem"
+                      ml="0.25rem"
+                      fontSize="0.9rem"
+                    />
+                  </div>
                 </div>
-                <button onClick={checkCerti}>확인</button>
-              </div>
-            )}
-            <div>
-              <label htmlFor="profileImg">프로필 사진</label>
-              <br />
-              <input
-                type="file"
-                id="profileImg"
-                className="input check-input"
-                placeholder="Profile Image"
-                value={imagePath}
-                onChange={e => {
-                  encodeFileToBase64(e.target.files[0]);
-                }}
+              </Wrapper>
+            </InputBlock>
+            {/* </MenuWrapper> */}
+            <form onSubmit={editUserBtn}>
+              <InputBlock>
+                <Wrapper>
+                  <div className="desc" width="small">
+                    주소
+                  </div>
+                  <SelectBox
+                    onChange={inputSi}
+                    value={si}
+                    placeholder="시"
+                    width="6rem"
+                  >
+                    {options1.map(item => (
+                      <option value={item} key={item}>
+                        {item}
+                      </option>
+                    ))}
+                  </SelectBox>
+                  <SelectBox
+                    onChange={inputGun}
+                    value={gun}
+                    placeholder="구"
+                    width="6rem"
+                  >
+                    {options2?.map(item => (
+                      <option value={item} key={item}>
+                        {item}
+                      </option>
+                    ))}
+                  </SelectBox>
+                  <SelectBox
+                    onChange={inputDong}
+                    value={dong}
+                    placeholder="동"
+                    width="6rem"
+                  >
+                    {options3?.map(item => (
+                      <option value={item} key={item}>
+                        {item}
+                      </option>
+                    ))}
+                  </SelectBox>
+                </Wrapper>
+              </InputBlock>
+              <InputContainer
+                desc="이메일"
+                onChange={onChangeEmail}
+                value={email}
+                name="email"
+                isValid={isEmail}
+                errMsg={email.length > 0 ? emailMessage : ''}
+                width="17rem"
               />
-            </div>
-            <div className="preview">
-              {imagePath && <img src={imagePath} alt="preview-img" />}
-            </div>
-            <EditUserContentRow>
-              <label htmlFor="nickname">닉네임</label>
-              <br />
-              <input
-                type="text"
-                id="nickname"
-                className="input check-input"
-                placeholder="Nickname"
-                value={nick}
-                onChange={inputNick}
-              />
-              <button onClick={CheckNick} hidden={nickCheck}>
-                중복검사
-              </button>
-              <br />
-              {nick?.length > 0 && (
-                <span className={`message ${isNick ? 'success' : 'error'}`}>
-                  {nickMessage}
-                </span>
+              {!emailCheck && (
+                <Wrapper>
+                  <div className="desc">
+                    <div className="star"></div>
+                  </div>
+                  <div className="btnInput">
+                    <Input
+                      width="8rem"
+                      onChange={inputEmailCerti}
+                      // value={emailCerti}
+                      name="mailcerti"
+                      placeholder="인증번호 입력"
+                    />
+                    {emailSend ? (
+                      <div className="btnInput">
+                        <Timer />
+                        <Button
+                          name="확인"
+                          width="5rem"
+                          height="2rem"
+                          ml="1rem"
+                          onClick={checkCerti}
+                        />
+                      </div>
+                    ) : (
+                      <Button
+                        name="인증번호 전송"
+                        width="8rem"
+                        height="2rem"
+                        ml="1rem"
+                        onClick={sendMail}
+                      />
+                    )}
+                  </div>
+                </Wrapper>
               )}
-            </EditUserContentRow>
-            <EditUserContentRow>
-              <label htmlFor="weight">몸무게</label>
-              <span className="message success"> (선택 사항입니다)</span>
-              <br />
-              <input
-                type="text"
-                id="weight"
-                className="input check-input"
-                placeholder="Weight"
-                value={weight === null ? '' : weight}
+              <Wrapper>
+                <div className="desc">닉네임</div>
+                <div className="btnInput">
+                  <Input
+                    width={!nickCheck ? '11rem' : '17rem'}
+                    onChange={inputNick}
+                    name="nickname"
+                    value={nick}
+                  />
+                  {!nickCheck && (
+                    <div className="btnInput">
+                      <Button
+                        name="중복검사"
+                        width="5rem"
+                        height="2rem"
+                        ml="1rem"
+                        onClick={CheckNick}
+                      />
+                    </div>
+                  )}
+                </div>
+              </Wrapper>
+              {nick.length > 0 && !nickCheck && (
+                <Wrapper mt="0">
+                  <div className="desc">
+                    <div className="star"></div>
+                  </div>
+                  <ValidContainer
+                    isValid={nickCheck}
+                    errMsg={nick.length > 0 && nickMessage}
+                  />
+                </Wrapper>
+              )}
+              <InputContainer
+                desc="몸무게"
                 onChange={inputWeight}
+                value={weight === 0 || weight === '0' ? '' : weight}
+                name="weight"
+                width="17rem"
+                type="number"
               />
-            </EditUserContentRow>
-            <EditUserContentRow>
-              <label htmlFor="bike-weight">자전거 무게</label>
-              <span className="message success"> (선택 사항입니다)</span>
-              <br />
-              <input
-                type="text"
-                id="bike-weight"
-                className="input check-input"
-                placeholder="Bike Weight"
-                value={bikeweight === null ? '' : bikeweight}
+              <InputContainer
+                desc="자전거 무게"
                 onChange={inputBikeweight}
+                value={bikeweight === 0 || bikeweight === '0' ? '' : bikeweight}
+                name="weight"
+                width="17rem"
+                type="number"
               />
-            </EditUserContentRow>
-            <div>
-              <input
-                type="checkbox"
-                id="open"
-                className="input check-input"
-                placeholder="Open"
-                value={open}
-                onChange={inputOpen}
-              />
-              <label htmlFor="open">정보를 공개하시겠습니까?</label>
-            </div>
-            <div>
-              <button className="signup-btn" type="submit">
-                가입
-              </button>
-            </div>
-          </form>
-        </div>
-      )}
-    </div>
+              <InputBlock>
+                <Wrapper>
+                  <div className="desc">정보 공개 여부</div>
+                  <Input
+                    type="checkbox"
+                    onChange={inputOpen}
+                    width="1.5rem"
+                    checked={open}
+                  />
+                </Wrapper>
+              </InputBlock>
+              <InputBlock>
+                <Button
+                  name="변경"
+                  mt="1rem"
+                  mr="0.5rem"
+                  height="3rem"
+                  width="5rem"
+                  type="submit"
+                  onClick={sendImageToServer}
+                />
+                <Button
+                  name="취소"
+                  mt="1rem"
+                  ml="0.5rem"
+                  bc="#C4C4C4"
+                  height="3rem"
+                  width="5rem"
+                  hoverColor="#a2a2a2"
+                  onClick={back}
+                />
+              </InputBlock>
+              <div style={{ display: 'flex', justifyContent: 'center' }}>
+                <Link
+                  to="/user/delete"
+                  style={{
+                    textDecoration: 'none',
+                    color: 'black',
+                    marginTop: '2rem',
+                  }}
+                >
+                  회원탈퇴
+                </Link>
+              </div>
+            </form>
+          </MainContainer>
+        )}
+      </Container>
+    </>
   );
 };
 

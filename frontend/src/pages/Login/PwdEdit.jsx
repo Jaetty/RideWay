@@ -1,13 +1,22 @@
+/* eslint-disable */
 import React, { useCallback, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router';
 import Swal from 'sweetalert2';
+import Button from '../../components/commons/button';
+import InputContainer from '../../components/commons/inputContainer';
+import NowContainer from '../../components/commons/nowLocation';
 import { EDIT_PWD_REQUEST } from '../../store/modules/userModule';
-import { EditPwdContentRow } from './PwdEdit.style';
+import { Container, Desc, InputBlock, MainContainer } from './PwdEdit.style';
 
 const pwdEdit = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+
+  const back = e => {
+    e.preventDefault();
+    navigate(-1);
+  };
 
   // 오류메시지 상태저장
   const [pwdMessage, setPwdMessage] = useState('');
@@ -34,12 +43,10 @@ const pwdEdit = () => {
     setNewPassword(passwordCurrent);
 
     if (!passwordRegex.test(passwordCurrent)) {
-      setPwdMessage(
-        '숫자+영문자+특수문자 조합으로 8자리 이상 16자 이하로 입력해주세요!',
-      );
+      setPwdMessage('숫자+영문자+특수문자로 8자리 이상 입력하세요');
       setIsPwd(false);
     } else {
-      setPwdMessage('안전한 비밀번호에요 : )');
+      setPwdMessage('');
       setIsPwd(true);
     }
   }, []);
@@ -51,10 +58,10 @@ const pwdEdit = () => {
       setConfirmPassword(passwordCheckCurrent);
 
       if (newPassword === passwordCheckCurrent) {
-        setPwdChkMessage('비밀번호를 똑같이 입력했어요 : )');
+        setPwdChkMessage('');
         setIsPwdChk(true);
       } else {
-        setPwdChkMessage('비밀번호가 틀려요. 다시 확인해주세요 ㅜ ㅜ');
+        setPwdChkMessage('비밀번호가 틀립니다.');
         setIsPwdChk(false);
       }
     },
@@ -92,63 +99,64 @@ const pwdEdit = () => {
   };
 
   return (
-    <div>
-      <h1>LOGO</h1>
-      <div>
-        <h3>비밀번호 변경</h3>
-      </div>
-      <form onSubmit={passwordEdit}>
-        <EditPwdContentRow>
-          <label htmlFor="currentPassword">현재 비밀번호</label>
-          <br />
-          <input
-            required
-            value={currentPassword}
+    <>
+      <NowContainer desc="비 밀 번 호 변 경" />
+      <Container>
+        <MainContainer>
+          <InputContainer
+            desc="현재 비밀번호"
+            star
+            type="password"
             onChange={inputCurrentPassword}
-            id="currentPassword"
-            type="password"
+            name="currentPassword"
+            width="12rem"
           />
-        </EditPwdContentRow>
-        <EditPwdContentRow>
-          <label htmlFor="newPassword">변경할 비밀번호</label>
-          <br />
-          <input
-            required
-            value={newPassword}
+          <InputContainer
+            desc="새 비밀번호"
+            star
+            type="password"
             onChange={onChangePassword}
-            id="newPassword"
-            type="password"
+            name="password"
+            isValid={isPwd}
+            errMsg={pwdMessage}
+            width="12rem"
           />
-          <br />
-          {newPassword.length > 0 && (
-            <span className={`message ${isPwd ? 'success' : 'error'}`}>
-              {pwdMessage}
-            </span>
-          )}
-        </EditPwdContentRow>
-        <EditPwdContentRow>
-          <label htmlFor="confirmPassword">비밀번호 재확인</label>
-          <br />
-          <input
-            required
-            value={confirmPassword}
+          <InputContainer
+            desc="비밀번호 확인"
+            star
+            type="password"
             onChange={onChangePasswordCheck}
-            id="confirmPassword"
-            type="password"
+            name="passwordConfirm"
+            isValid={isPwdChk}
+            errMsg={pwdChkMessage}
+            width="12rem"
           />
-          <br />
-          {confirmPassword.length > 0 && (
-            <span className={`message ${isPwdChk ? 'success' : 'error'}`}>
-              {pwdChkMessage}
-            </span>
-          )}
-        </EditPwdContentRow>
-        <div>
-          <input type="submit" value="확인" />
-          <button>취소</button>
-        </div>
-      </form>
-    </div>
+          <InputBlock>
+            <Button
+              name="수정"
+              // bc="white"
+              width="5rem"
+              height="3rem"
+              mt="3rem"
+              mr="0.5rem"
+              // hoverColor="#a2a2a2"
+              onClick={passwordEdit}
+              type="submit"
+            />
+            <Button
+              name="취소"
+              // bc="white"
+              width="5rem"
+              height="3rem"
+              mt="3rem"
+              ml="0.5rem"
+              // hoverColor="#a2a2a2"
+              onClick={back}
+            />
+          </InputBlock>
+        </MainContainer>
+      </Container>
+    </>
   );
 };
 

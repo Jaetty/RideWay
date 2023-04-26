@@ -4,6 +4,7 @@ import com.example.demo.domain.Report;
 import com.example.demo.domain.User;
 import com.example.demo.repository.ReportRepository;
 import com.example.demo.repository.UserRepository;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -11,13 +12,17 @@ import java.util.HashMap;
 import java.util.List;
 
 @RestController
-@RequestMapping(value = "/report")
+@Log4j2
+@RequestMapping(value = "/api/report")
 @CrossOrigin(
+        "*"
         // localhost:5500 과 127.0.0.1 구분
-        origins = "http://localhost:8080", // allowCredentials = "true" 일 경우, origins="*" 는 X
-        allowCredentials = "true",
-        allowedHeaders = "*",
-        methods = {RequestMethod.GET,RequestMethod.POST,RequestMethod.DELETE,RequestMethod.PUT,RequestMethod.HEAD,RequestMethod.OPTIONS}
+
+
+//        allowCredentials = "true",
+//        allowedHeaders = "*",
+//        methods = {RequestMethod.GET,RequestMethod.POST,RequestMethod.DELETE,RequestMethod.PUT,RequestMethod.HEAD,RequestMethod.OPTIONS}
+
 )
 public class ReportController {
 

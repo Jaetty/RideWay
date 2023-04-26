@@ -6,6 +6,7 @@ import com.example.demo.domain.Si;
 import com.example.demo.repository.DongRepository;
 import com.example.demo.repository.GunRepository;
 import com.example.demo.repository.SiRepository;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -13,13 +14,17 @@ import java.util.ArrayList;
 import java.util.List;
 
 @RestController
-@RequestMapping(value = "/region")
+@Log4j2
+@RequestMapping(value = "/api/region")
 @CrossOrigin(
+        "*"
         // localhost:5500 과 127.0.0.1 구분
-        origins = "http://localhost:8080", // allowCredentials = "true" 일 경우, origins="*" 는 X
-        allowCredentials = "true",
-        allowedHeaders = "*",
-        methods = {RequestMethod.GET,RequestMethod.POST,RequestMethod.DELETE,RequestMethod.PUT,RequestMethod.HEAD,RequestMethod.OPTIONS}
+
+//
+//        allowCredentials = "true",
+//        allowedHeaders = "*",
+//        methods = {RequestMethod.GET,RequestMethod.POST,RequestMethod.DELETE,RequestMethod.PUT,RequestMethod.HEAD,RequestMethod.OPTIONS}
+
 )
 public class RegionController {
     @Autowired
@@ -58,20 +63,23 @@ public class RegionController {
 
         Integer si_code_int =  Integer.valueOf(si_code);
         Integer gun_code_int =  Integer.valueOf(gun_code);
-//        return dongRepository.findByIdAndName(si_code_int, gun_code_int);
+        return dongRepository.findByIdAndName(si_code_int, gun_code_int);
         //return dongRepository.findByName(si_code_int, gun_code_int);
-        List<Dong> dongList = dongRepository.findAll();
-        List<Dong> returnList = new ArrayList<Dong>();
-
-        for (int i = 0; i < dongList.size(); i++){
-            if (dongList.get(i).getSi_code().equals(si_code_int)){      // 시 코드가 일치하는 지역
-                if (dongList.get(i).getGun_code().equals(gun_code_int)){    // 군 코드가 일치하는 지역
-                    returnList.add(dongList.get(i));
-                }
-            }
-        }
+//        List<Dong> dongList = dongRepository.findAll();
+//        List<Dong> returnList = new ArrayList<Dong>();
+//
+//        for (int i = 0; i < dongList.size(); i++){
+//            if (dongList.get(i).getSi_code().equals(si_code_int)){      // 시 코드가 일치하는 지역
+//                if (dongList.get(i).getGun_code().equals(gun_code_int)){    // 군 코드가 일치하는 지역
+//                    returnList.add(dongList.get(i));
+//                }
+//            }
+//        }
+//
+//        //return dongRepository.findAll();
+//        return returnList;
 
         //return dongRepository.findAll();
-        return returnList;
+//        return returnList;
     }
 }
