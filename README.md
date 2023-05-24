@@ -33,15 +33,15 @@
 
 #### 메인화면
 
-![app_main](https://github.com/Ha-Yuseong/rideway/assets/62275698/1f51de66-4893-4015-a8fc-5a521f6dc426)
+![app_main](assets/rn_image_picker_lib_temp_9d40dfc3-1ca3-4b6f-9d9f-2f37fd95f7bf.gif)
 
 #### 채팅
 
-![app_chat](https://github.com/Ha-Yuseong/rideway/assets/62275698/f0b7f2b7-4a50-4a9e-b62c-6080625f8de2)
+![app_chat](assets/Image_Pasted_at_2023-2-16_15-26.gif)
 
 #### 지도 및 경로
 
-![app_map](https://github.com/Ha-Yuseong/rideway/assets/62275698/d868989b-7969-4d5b-8670-74877a43ed3e)
+![app_map](assets/rn_image_picker_lib_temp_c9c8d654-dfbe-4e90-a0db-67b3ece3375e.gif)
 
 ### 서비스 전체 기능
 
@@ -67,7 +67,7 @@
 <img src="https://img.shields.io/badge/java-007396?style=for-the-badge&logo=java&logoColor=white"> <img src="https://img.shields.io/badge/jwt-000000?style=for-the-badge&logo=jason%20web%20tokens&logoColor=white"> <img src="https://img.shields.io/badge/spring-6DB33F?style=for-the-badge&logo=spring&logoColor=white"> <img src="https://img.shields.io/badge/springboot-6DB33F?style=for-the-badge&logo=springboot&logoColor=white"> <img src="https://img.shields.io/badge/gradle-02303A?style=for-the-badge&logo=gradle&logoColor=white"> <img src="https://img.shields.io/badge/mysql-4479A1?style=for-the-badge&logo=mysql&logoColor=white"> <img src="https://img.shields.io/badge/react-61DAFB?style=for-the-badge&logo=react&logoColor=white"> <img src="https://img.shields.io/badge/redux-764ABC?style=for-the-badge&logo=redux&logoColor=white"> <img src="https://img.shields.io/badge/node.js-339933?style=for-the-badge&logo=node.js&logoColor=white"> <img src="https://img.shields.io/badge/webRTC-333333?style=for-the-badge&logo=webRTC&logoColor=white"> <img src="https://img.shields.io/badge/socket.io-010101?style=for-the-badge&logo=socket.io&logoColor=white"> <img src="https://img.shields.io/badge/android-3DDC84?style=for-the-badge&logo=android&logoColor=white"> <img src="https://img.shields.io/badge/kotlin-7F52FF?style=for-the-badge&logo=kotlin&logoColor=white"> <img src="https://img.shields.io/badge/amazonaws-232F3E?style=for-the-badge&logo=amazon%20aws&logoColor=white"> <img src="https://img.shields.io/badge/jenkins-D24939?style=for-the-badge&logo=jenkins&logoColor=white"> <img src="https://img.shields.io/badge/jirasoftware-0052CC?style=for-the-badge&logo=jira%20software&logoColor=white"> <img src="https://img.shields.io/badge/gitlab-FC6D26?style=for-the-badge&logo=gitlab&logoColor=white">
 
 ## 🖥 시스템 아키텍처
-![image-20230309140442618](https://github.com/Ha-Yuseong/rideway/assets/62275698/14a06b85-13d6-41fd-9217-a5c9d0688a95)
+![image-20230309140442618](assets/image-20230309140442618.png)
 
 ## 🗂️ 디렉토리 구조
 
@@ -226,7 +226,7 @@
 
 ## 💾 ERD 다이어그램
 
-![ERD](https://github.com/Ha-Yuseong/rideway/assets/62275698/00ff7de0-cec6-4876-b5f5-feb43a2e25ea)
+![ERD](assets/ERD.png)
 
 ### 🔖Convention
 
