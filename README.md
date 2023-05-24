@@ -3,49 +3,37 @@
 > Rideway는 자전거가 취미인 사람들의 커뮤니티를 위한 웹 및 어플리케이션입니다. 주요 기획 의도는 **자전거를 타는 사람들이 쉽고 간편하게 소통하고, 기존의 주행 기록을 남겨주는 앱들에 대한 불편점을 개선하고 통합하기 위한 서비스**의 개발이였습니다.  
 > 평소에도 라이딩을 하며 국토 종주를 하면서 겪었던 다양한 경험들에 대한 불편한 점을 해소하기 위해 개발되었고 사용자들의 경험을 간편하게 공유할 수 있으며 다른 사람들과의 만남을 이끌어 낼 수 있는 서비스를 제공하고자 하였습니다.
 
-
 # 서비스
-
-## 0. 메인 페이지
-
-
-
-
-![image-20230309140831494](assets/image-20230309140831494.png)
 
 ## 1. 커뮤니티 기능
 
-
-![image-20230309140629282](assets/image-20230309140629282.png)
-
+![RideWay_-_Chrome_2023-02-16_13-41-28.gif](C:\Users\SSAFY\Desktop\RideWay_-_Chrome_2023-02-16_13-41-28.gif)
 
 ## 2. 중고 거래 기능
 
-<img src="assets/image-20230309140640142.png" alt="image-20230309140640142" />
-
+![RideWay_-_Chrome_2023-02-17_11-17-28.gif](C:\Users\SSAFY\Desktop\RideWay_-_Chrome_2023-02-17_11-17-28.gif)
 
 ## 3. 모임 기능
 
-
-![image-20230309140722993](assets/image-20230309140722993.png)
-
+![RideWay_-_Chrome_2023-02-17_09-17-02.gif](C:\Users\SSAFY\Desktop\RideWay_-_Chrome_2023-02-17_09-17-02.gif)
 
 ## 4. 지도 기능
 
-
-![image-20230309140735532](assets/image-20230309140735532.png)
-
+![RideWay_-_Chrome_2023-02-16_13-55-06.gif](C:\Users\SSAFY\Desktop\RideWay_-_Chrome_2023-02-16_13-55-06.gif)
 
 ## 5. 앱 기능
 
-
 #### 메인화면
-![image-20230309140749025](assets/image-20230309140749025.png)
 
+![rn_image_picker_lib_temp_9d40dfc3-1ca3-4b6f-9d9f-2f37fd95f7bf.gif](C:\Users\SSAFY\Desktop\rn_image_picker_lib_temp_9d40dfc3-1ca3-4b6f-9d9f-2f37fd95f7bf.gif)
+
+#### 채팅
+
+<img title="" src="file:///C:/Users/SSAFY/Desktop/Image_Pasted_at_2023-2-16_15-26.gif" alt="Image_Pasted_at_2023-2-16_15-26.gif" width="327">
 
 #### 지도 및 경로
-![image-20230309140808344](assets/image-20230309140808344.png)
 
+![loading-ag-537](C:\Users\SSAFY\Desktop\rn_image_picker_lib_temp_c9c8d654-dfbe-4e90-a0db-67b3ece3375e.gif)
 
 ### 서비스 전체 기능
 
@@ -59,31 +47,44 @@
 - 지도 기능 - 병원, 카페 등의 주변정보나 자전거 전용 도로, 지형 등에 대한 정보를 볼 수 있음
 - 주행 기록 저장 기능 - 자전거를 탄 주행 기록과 경로를 저장하고 확인 할 수 있음
 - 경로 추천 기능 - 서로의 주행 경로를 공유할 수 있음 
- - 좋아요
- - 경로 저장 - 마음에 드는 경로를 저장해두면 이후에 지도에서 목록을 통해 확인할 수 있음
+  - 좋아요
+  - 경로 저장 - 마음에 드는 경로를 저장해두면 이후에 지도에서 목록을 통해 확인할 수 있음
 - 랭킹 기능 - 전체에서, 혹은 주별로 특별한 기록을 세운 사람은 메인 화면에 게시됨
 - 업적 기능 - 업적 달성 시 뱃지를 지급
 
-
-
-
 # 📝 Design
 
-
 ## 🛠️ 기술 스택
-![image-20230309140422297](assets/image-20230309140422297.png)
 
+<img src="https://img.shields.io/badge/java-007396?style=for-the-badge&logo=java&logoColor=white">
+<img src="https://img.shields.io/badge/jwt-000000?style=for-the-badge&logo=jason%20web%20tokens&logoColor=white">
+<img src="https://img.shields.io/badge/spring-6DB33F?style=for-the-badge&logo=spring&logoColor=white">
+<img src="https://img.shields.io/badge/springboot-6DB33F?style=for-the-badge&logo=springboot&logoColor=white">
+<img src="https://img.shields.io/badge/gradle-02303A?style=for-the-badge&logo=gradle&logoColor=white">
+<img src="https://img.shields.io/badge/mysql-4479A1?style=for-the-badge&logo=mysql&logoColor=white">
 
+<img src="https://img.shields.io/badge/react-61DAFB?style=for-the-badge&logo=react&logoColor=white">
+<img src="https://img.shields.io/badge/redux-764ABC?style=for-the-badge&logo=redux&logoColor=white">
+<img src="https://img.shields.io/badge/node.js-339933?style=for-the-badge&logo=node.js&logoColor=white">
+<img src="https://img.shields.io/badge/webRTC-333333?style=for-the-badge&logo=webRTC&logoColor=white">
+<img src="https://img.shields.io/badge/socket.io-010101?style=for-the-badge&logo=socket.io&logoColor=white">
 
+<img src="https://img.shields.io/badge/android-3DDC84?style=for-the-badge&logo=android&logoColor=white">
+<img src="https://img.shields.io/badge/kotlin-7F52FF?style=for-the-badge&logo=kotlin&logoColor=white">
+
+<img src="https://img.shields.io/badge/amazonaws-232F3E?style=for-the-badge&logo=amazon%20aws&logoColor=white">
+<img src="https://img.shields.io/badge/jenkins-D24939?style=for-the-badge&logo=jenkins&logoColor=white">
+<img src="https://img.shields.io/badge/jirasoftware-0052CC?style=for-the-badge&logo=jira%20software&logoColor=white">
+<img src="https://img.shields.io/badge/gitlab-FC6D26?style=for-the-badge&logo=gitlab&logoColor=white">
 
 ## 🖥 시스템 아키텍처
 
-![image-20230309140442618](assets/image-20230309140442618.png)
-
+![rideway](/uploads/3068ed0f41324c7ca580a98606e3279c/rideway.png)
 
 ## 🗂️ 디렉토리 구조
 
 #### BE
+
 ```
 📦demo-1
  ┣ 📂GPXDIR
@@ -119,8 +120,8 @@
  ┗ 📂Unofficial
 ```
 
-
 #### FE
+
 ```
  ┣ 📂public
  ┃ ┣ 📂images
@@ -178,8 +179,8 @@
    ┗ 📂utils
 ```
 
-
 #### App
+
 ```
 📦src
  ┣ 📂androidTest
@@ -233,12 +234,35 @@
      ┗ 📂com
        ┗ 📂android
          ┗ 📂rideway_app
-
 ```
 
 ## 💾 ERD 다이어그램
-![ERD](assets/ERD.png)
 
+![ERD](/uploads/a445c70645309ab6e47a9ad79b11c1e1/ERD.png)
+
+## 🧾 요구사항 명세서
+
+![10](/uploads/77687cd55f9666d161c24fc120e1590a/10.png)
+
+![11](/uploads/8b2acd06e1b2686db8dee9d9fcfe58cf/11.png)
+
+## 📋 API 연동 명세서
+
+![1](/uploads/36be114cfa8cedb232131bc1cfa0e38f/1.png)
+
+![2](/uploads/ee693244105f01dd3d2408597b312450/2.png)
+
+![3](/uploads/6cbd163c50b8c69529c0dfc658881c67/3.png)
+
+![4](/uploads/03711a5ffba6eab769e1d8980ff1d76b/4.png)
+
+![5](/uploads/5963b8c7efc348476f4223beafc607cb/5.png)
+
+![6](/uploads/f320cfdaf1991f92f114914d69a426e5/6.png)
+
+![7](/uploads/a47de2a3c88456398369f8c3d1bb4f82/7.png)
+
+![8](/uploads/8c9e754252fda11d30381cd27802e6ee/8.png)
 
 ---
 
@@ -249,7 +273,7 @@
 #### 1. Git commit message
 
 - type
-
+  
   - Feat: 기능 추가
   - Fix: 버그 수정
   - Update: 코드 수정
@@ -261,11 +285,10 @@
   - ADD:  파일 추가
 
 - Subject
-
+  
   - 50자를 넘기지 말 것
-
+  
   - 한글로 작성하고, 마침표 쓰지 않을 것
-
 
 ```
 예시) [파트] ADD: 파일작업 내용
@@ -291,44 +314,42 @@
 ### 📃기록
 
 - 1일 1회의 이상 진행 후 회의록을 `Notion`에 남긴다.
+  
   - https://clumsy-pleasure-947.notion.site/d0b19ac938b444f4a7605d83ac6be1de?v=2858af2735574a35bbcd364282340e8c
 
 - 오전에 스크럼 회의 진행
+  
   - 이전 작업에서 했던 일, 오늘 할 일, 에러 사항 등을 아주 빠른 시간에 공유 및 리뷰
   - https://www.notion.so/9386789923b5465594b4581e576233ed?v=fa2185d73ead47bface50c965a593ad4
-
 
 ---
 
 ### ✏기획 / 설계
 
-| 구분              | URL                                                          |
-| ----------------- | ------------------------------------------------------------ |
-| 기획서            | 파일 형태 업로드                                             |
-| 피그마            | [https://www.figma.com/file/Cf7yApPwwkLJZm1P6j3WJd/%EA%B3%B5%ED%86%B5-PJT?node-id=0%3A1&t=W3h0lHUX6v98ImnN-0](https://www.figma.com/file/Cf7yApPwwkLJZm1P6j3WJd/공통-PJT?node-id=0%3A1&t=W3h0lHUX6v98ImnN-0) |
-| API 연동 규격서   | https://docs.google.com/spreadsheets/d/1viIlJ_Aqn48uAJmR1TGB4Cv9LCA2cnBmUL_EiaFsqb0/edit#gid=0 |
-| ERD               | https://www.erdcloud.com/d/nHAH8dqehkava3uwB                 |
-| 기능명세서        | https://docs.google.com/spreadsheets/d/1G2wQvuCCU6PUzvZS7AmbfDqdYM8gr-DHa5T08NMJoR4/edit#gid=0 |
-| GanttChart        | PNG 형식 모음                                                |
-| 시퀀스 다이어그램 | PNG 형식 모음                                                |
-| TestCode          | 시간 부족으로 미진행                                         |
-| 플립 예약         | https://docs.google.com/spreadsheets/d/1G9ZGNzhl6b47aHJ42SWS3agR0LM5WPg-7e68Z-Tx6Dk/edit#gid=759164879 |
-
+| 구분         | URL                                                                                                                                                                                                        |
+| ---------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 기획서        | 파일 형태 업로드                                                                                                                                                                                                  |
+| 피그마        | [https://www.figma.com/file/Cf7yApPwwkLJZm1P6j3WJd/%EA%B3%B5%ED%86%B5-PJT?node-id=0%3A1&t=W3h0lHUX6v98ImnN-0](https://www.figma.com/file/Cf7yApPwwkLJZm1P6j3WJd/공통-PJT?node-id=0%3A1&t=W3h0lHUX6v98ImnN-0) |
+| API 연동 규격서 | https://docs.google.com/spreadsheets/d/1viIlJ_Aqn48uAJmR1TGB4Cv9LCA2cnBmUL_EiaFsqb0/edit#gid=0                                                                                                             |
+| ERD        | https://www.erdcloud.com/d/nHAH8dqehkava3uwB                                                                                                                                                               |
+| 기능명세서      | https://docs.google.com/spreadsheets/d/1G2wQvuCCU6PUzvZS7AmbfDqdYM8gr-DHa5T08NMJoR4/edit#gid=0                                                                                                             |
+| GanttChart | PNG 형식 모음                                                                                                                                                                                                  |
+| 시퀀스 다이어그램  | PNG 형식 모음                                                                                                                                                                                                  |
+| TestCode   | 시간 부족으로 미진행                                                                                                                                                                                                |
+| 플립 예약      | https://docs.google.com/spreadsheets/d/1G9ZGNzhl6b47aHJ42SWS3agR0LM5WPg-7e68Z-Tx6Dk/edit#gid=759164879                                                                                                     |
 
 ---
 
-
 ### 🗃역할
 
-
-| 팀원명 | 담당 포지션 |         |
-| ------ | ----------- | ------- |
-| 이상찬 | FE          | 웹      |
-| 윤도현 | BE          | 웹      |
-| 최형규 | FE          | 웹      |
-| 하상재 | FE          | 앱      |
-| 서우린 | BE          | 앱 + 웹 |
-| 권용진 | BE          | 웹      |
+| 팀원명 | 담당 포지션 |       |
+| --- | ------ | ----- |
+| 이상찬 | FE     | 웹     |
+| 윤도현 | BE     | 웹     |
+| 최형규 | FE     | 웹     |
+| 하상재 | FE     | 앱     |
+| 서우린 | BE     | 앱 + 웹 |
+| 권용진 | BE     | 웹     |
 
 ---
 
