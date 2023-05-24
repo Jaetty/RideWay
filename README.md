@@ -5,21 +5,29 @@
 
 # 서비스
 
+![image-20230309140831494](assets/image-20230309140831494.png)
+
 ## 1. 커뮤니티 기능
 
-![RideWay_-_Chrome_2023-02-16_13-41-28.gif](C:\Users\SSAFY\Desktop\RideWay_-_Chrome_2023-02-16_13-41-28.gif)
+
+![image-20230309140629282](assets/image-20230309140629282.png)
+
 
 ## 2. 중고 거래 기능
 
-![RideWay_-_Chrome_2023-02-17_11-17-28.gif](C:\Users\SSAFY\Desktop\RideWay_-_Chrome_2023-02-17_11-17-28.gif)
+<img src="assets/image-20230309140640142.png" alt="image-20230309140640142" />
+
 
 ## 3. 모임 기능
 
-![RideWay_-_Chrome_2023-02-17_09-17-02.gif](C:\Users\SSAFY\Desktop\RideWay_-_Chrome_2023-02-17_09-17-02.gif)
+
+![image-20230309140722993](assets/image-20230309140722993.png)
+
 
 ## 4. 지도 기능
 
-![RideWay_-_Chrome_2023-02-16_13-55-06.gif](C:\Users\SSAFY\Desktop\RideWay_-_Chrome_2023-02-16_13-55-06.gif)
+
+![image-20230309140735532](assets/image-20230309140735532.png)
 
 ## 5. 앱 기능
 
