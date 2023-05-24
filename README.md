@@ -25,15 +25,15 @@
 
 #### 메인화면
 
-![rn_image_picker_lib_temp_9d40dfc3-1ca3-4b6f-9d9f-2f37fd95f7bf.gif](C:\Users\SSAFY\Desktop\rn_image_picker_lib_temp_9d40dfc3-1ca3-4b6f-9d9f-2f37fd95f7bf.gif)
+![app_main](https://github.com/Ha-Yuseong/rideway/assets/62275698/1f51de66-4893-4015-a8fc-5a521f6dc426)
 
 #### 채팅
 
-<img title="" src="file:///C:/Users/SSAFY/Desktop/Image_Pasted_at_2023-2-16_15-26.gif" alt="Image_Pasted_at_2023-2-16_15-26.gif" width="327">
+![app_chat](https://github.com/Ha-Yuseong/rideway/assets/62275698/f0b7f2b7-4a50-4a9e-b62c-6080625f8de2)
 
 #### 지도 및 경로
 
-![loading-ag-537](C:\Users\SSAFY\Desktop\rn_image_picker_lib_temp_c9c8d654-dfbe-4e90-a0db-67b3ece3375e.gif)
+![app_map](https://github.com/Ha-Yuseong/rideway/assets/62275698/d868989b-7969-4d5b-8670-74877a43ed3e)
 
 ### 서비스 전체 기능
 
