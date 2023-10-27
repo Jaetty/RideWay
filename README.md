@@ -309,8 +309,8 @@
 | 이상찬 | FE     | 웹     |
 | 윤도현 | BE     | 웹     |
 | 최형규 | FE     | 웹     |
-| 하상재 | Moblie App + BE     | 앱 + 웹 |
-| 서우린 | Moblie App + BE + DB     | 앱 + 웹 |
+| 하상재 | App + BE     | 앱 + 웹 |
+| 서우린 | App + BE + DB     | 앱 + 웹 + DB |
 | 권용진 | BE     | 웹     |
 
 ---
