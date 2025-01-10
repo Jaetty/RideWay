@@ -37,7 +37,7 @@
 
 #### 채팅
 
-![app_chat](assets/Image_Pasted_at_2023-2-16_15-26.gif)
+![app_chat](assets/rideway_message_size_small.gif)
 
 #### 지도 및 경로
 
